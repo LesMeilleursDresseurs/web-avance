@@ -29,7 +29,15 @@ For branch names
 
 
 ## Installation
+> In the backend 
+> - `cd backend`
+> - `npm install`
+> - `npm start`
 
+> In the frontend 
+> - `cd frontend`
+> - `npm install`
+> - `npm run dev`
 
 ## API YAML
 
