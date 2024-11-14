@@ -1,7 +1,4 @@
-# web-avance
-
-## Project name
-Pokedex
+# Pokedex
 
 ## Features
 - Pokedex of Pokemon cards, by ID number
@@ -21,7 +18,8 @@ Pokedex
 ## Git strategy 
 ### Git rules
 *Github flow*
-> For branch names
+
+For branch names
 - "fix/issue_name"
 - "feature/feature_name"
 - "v0.1"
