@@ -8,7 +8,7 @@ on:
       - reopened
 
 jobs:
-  prettier-check: # Check that the frontend codebase is formatted with prettier
+  prettier-check: # Check that the codebase is formatted with prettier
     name: Prettier format check
     runs-on: ubuntu-latest
     steps:
@@ -21,4 +21,7 @@ jobs:
         run: |
           cd frontend
           npm install prettier
-          npm run prettier:check
+          npm run check
+          cd ../backend
+          npm install prettier
+          npm run check

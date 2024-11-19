@@ -26,7 +26,8 @@
     "clean": "rimraf dist && echo Clean done! || echo Clean failed!",
     "build": "echo Build Server... && tsc src/index.ts --outDir dist && echo Build Server done! || echo Build Server failed!",
     "start": "node index.js",
-    "format": "prettier --write ./*.ts"
+    "format": "prettier --write \"src/**/*.{ts,js}\"",
+    "check": "prettier --check \"src/**/*.{ts,js}\""
   },
   "type": "module",
   "keywords": [],
