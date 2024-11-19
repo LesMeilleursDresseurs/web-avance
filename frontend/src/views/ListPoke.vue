@@ -17,54 +17,75 @@
       <div class="idPoke">#{{ pokemon.id }}</div>
     </article>
   </div>
-  <button @click="loadMore" class="secondary">Charger plus</button>
+  <div v-if="isLoading" class="loading"><img src="@/assets/loader.gif" /></div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import MenuTopBar from '@/components/MenuTopBar.vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const pokemons = ref([])
 const limit = 20 // Number of Pokemon per page
 let offset = 0 // Start
+const isLoading = ref(true)
 
 async function fetchPokemons() {
-  try {
-    const response = await fetch(
-      `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`,
-    )
-    const data = await response.json()
-    const pokemonDetails = await Promise.all(
-      data.results.map(async (pokemon) => {
-        const pokemonData = await fetch(pokemon.url).then((res) => res.json())
-        return {
-          id: pokemonData.id,
-          name: pokemonData.name,
-          image: pokemonData.sprites.front_default || '',
-        }
-      }),
-    )
-
-    pokemons.value = [...pokemons.value, ...pokemonDetails]
-    offset += limit
-  } catch (error) {
-    console.error('Error when recovering Pokémon :', error)
-  }
+  const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
+  const data = await response.json()
+  const pokemonDetails = await Promise.all(
+    data.results.map(async (pokemon) => {
+      const pokemonData = await fetch(pokemon.url).then((res) => res.json())
+      return {
+        id: pokemonData.id,
+        name: pokemonData.name,
+        image: pokemonData.sprites.front_default || '',
+      }
+    }),
+  )
+  pokemons.value = [...pokemons.value, ...pokemonDetails]
+  console.log('offset', offset)
+  offset += limit
+  setTimeout(() => {
+    isLoading.value = false
+  }, 4000)
 }
 
-fetchPokemons()
-
-function loadMore() {
+onMounted(() => {
   fetchPokemons()
-}
+  window.addEventListener('scroll', async () => {
+    if (
+      window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
+      !isLoading.value
+    ) {
+      isLoading.value = true
+      await fetchPokemons()
+      console.log('event')
+    }
+  })
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', () => {})
+})
 
 function viewPokemonDetails(id) {
   console.log(`Navigate to Pokémon details using the ID : ${id}`)
-  /* TO DO */
+  router.push({ name: 'PokeDetail', params: { id } })
 }
 </script>
 
 <style scoped>
+.loading {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.loading img {
+  width: 6vw;
+}
+
 h1 {
   text-align: center;
   margin: 1rem auto;
