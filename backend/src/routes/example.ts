@@ -49,7 +49,7 @@ server.post(
       return reply.status(400).send({ error: 'id is required' });
     }
 
-    db.user.create({
+    await db.user.create({
       data: {
         token: id,
         pseudo: fun ?? id,
