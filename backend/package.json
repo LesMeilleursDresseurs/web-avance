@@ -1,14 +1,32 @@
 {
   "dependencies": {
+    "@fastify/cors": "^10.0.1",
+    "@fastify/static": "^8.0.2",
+    "@fastify/swagger": "^9.3.0",
+    "@fastify/swagger-ui": "^5.1.0",
+    "@fastify/type-provider-typebox": "^5.0.1",
+    "@prisma/client": "^5.22.0",
+    "@sinclair/typebox": "^0.33.22",
     "fastify": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "prettier": "^3.3.3",
+    "prisma": "^5.22.0",
+    "rimraf": "^6.0.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
   },
   "name": "fastify",
   "version": "1.0.0",
-  "main": "server.js",
-  "devDependencies": {},
+  "main": "src/providers/server.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "dev": "tsx --watch src/index.ts",
+    "setup_prisma": "prisma db push && prisma generate && echo Prisma setup done! || echo Prisma setup failed!",
+    "clean": "rimraf dist && echo Clean done! || echo Clean failed!",
+    "build": "echo Build Server... && tsc src/index.ts --outDir dist && echo Build Server done! || echo Build Server failed!",
+    "start": "node index.js",
+    "format": "prettier --write ./*.ts"
   },
   "type": "module",
   "keywords": [],
