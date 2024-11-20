@@ -23,10 +23,10 @@ const router = createRouter({
       component: () => import('../views/ListPoke.vue'),
     },
     {
-      path: '/poke/:id',
+      path: '/poke/:name',
       name: 'PokeDetail',
       component: () => import('../views/PokeDetail.vue'),
-      props: (route) => ({ id: Number(route.params.id) }),
+      props: (route) => ({ name: String(route.params.name) }),
     },
   ],
 })

@@ -6,7 +6,7 @@
       v-for="pokemon in pokemons"
       :key="pokemon.id"
       class="card"
-      @click="viewPokemonDetails(pokemon.id)"
+      @click="viewPokemonDetails(pokemon.name)"
     >
       <header>
         <img :src="pokemon.image" :alt="pokemon.name" class="card-img" />
@@ -70,9 +70,9 @@ onUnmounted(() => {
   window.removeEventListener('scroll', () => {})
 })
 
-function viewPokemonDetails(id) {
-  console.log(`Navigate to Pokémon details using the ID : ${id}`)
-  router.push({ name: 'PokeDetail', params: { id } })
+function viewPokemonDetails(name: string) {
+  console.log(`Navigate to Pokémon details using the ID : ${name}`)
+  router.push({ name: 'PokeDetail', params: { name } })
 }
 </script>
 
