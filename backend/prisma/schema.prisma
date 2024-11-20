@@ -9,8 +9,11 @@ datasource db {
 
 model User {
   id     Int    @id @default(autoincrement())
-  pseudo String
-  token  String
+  email   String  @unique
+  picture String?
+  firstname String?
+  lastname  String?
+
 
   // Relation field
   CardCollection CardCollection[]

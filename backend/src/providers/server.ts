@@ -14,6 +14,7 @@ export const configurePlugins = async () => {
       consumes: ['application/json'],
       produces: ['application/json'],
       tags: [{ name: 'Example', description: 'Example end-points' }],
+      tags: [{ name: 'Login', description: 'User authentification end-points' }],
     },
   });
   await server.register(cors);

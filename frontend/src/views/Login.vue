@@ -3,12 +3,14 @@
     <span></span>
     <div class="form">
       <div>
-        <h3>Sign up / Log in</h3>
-        <p>to access your pokedex 🔥</p>
+        <h3 class="no-pico">Sign up / Log in</h3>
+        <p class="no-pico">to access your pokedex 🔥</p>
       </div>
-      <div>
+      <div v-if="!loading">
         <GoogleLogin :callback="callback" prompt class="google-btn"/>
+        <p v-if="error !== null" class="error-msg">{{ error }}</p>
       </div>
+      <img class="loader" src="@/assets/loader.gif" alt="logo" v-if="loading">
     </div>
   </main>
 </template>
@@ -20,10 +22,18 @@ import { decodeCredential } from 'vue3-google-login'
 
 export default defineComponent({
   name: "LoginPage",
+  computed: {
+    error : () => { return store.getters['login/getError'] },
+    loading: () => { return store.getters['login/getLoading'] }
+  },
   methods: {
     callback(response) {
       const userData = decodeCredential(response.credential)
-      store.dispatch('login/logIn', userData)
+      await store.dispatch('login/logIn', userData)
+      if(this.error !== null) {
+        // TODO: change the path
+        this.$router.push('/')
+      }
     },
   }
 })
@@ -65,11 +75,21 @@ div.form {
   position: absolute;
   border-radius: 10px;
   animation: blur-effect 0.5s forwards;
+  text-align: center;
   //background-color: rgba(255, 255, 255, 0.2); /* 10% opacity */
 }
 
-div.from h3 {
+.no-pico {
   color: white !important;
+}
+
+.error-msg {
+  color: red !important;
+  text-align: center;
+}
+
+.loader {
+  width: 100px;
 }
 
 @keyframes blur-effect {
