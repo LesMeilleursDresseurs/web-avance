@@ -17,6 +17,17 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue'),
     },
+    {
+      path: '/poke',
+      name: 'poke',
+      component: () => import('../views/ListPoke.vue'),
+    },
+    {
+      path: '/poke/:id',
+      name: 'PokeDetail',
+      component: () => import('../views/PokeDetail.vue'),
+      props: (route) => ({ id: Number(route.params.id) }),
+    },
   ],
 })
 

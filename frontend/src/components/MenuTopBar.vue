@@ -1,6 +1,6 @@
 <script setup lang="ts">
-  import { useRouter } from 'vue-router';
-  const router = useRouter();
+import { useRouter } from 'vue-router'
+const router = useRouter()
 </script>
 
 <template>
@@ -48,31 +48,31 @@
     gap: 20px;
   }
 
-  .nav-button {
-    background: none;
-    color: white;
-    border: none;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
-    position: relative;
-    text-transform: uppercase;
-    padding: 5px;
-    transition: all 0.3s ease;
-  }
+.nav-button {
+  background: none;
+  color: white;
+  border: none;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  position: relative;
+  text-transform: uppercase;
+  padding: 5px;
+  transition: all 0.3s ease;
+}
 
-  .nav-button::after {
-    content: "";
-    display: block;
-    width: 0;
-    height: 2px;
-    background-color: white;
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    transition: width 0.3s ease;
-  }
+.nav-button::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 2px;
+  background-color: white;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: width 0.3s ease;
+}
 
   .nav-button:hover::after {
   width: 50%;
