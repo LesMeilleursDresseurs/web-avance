@@ -5,28 +5,48 @@ const router = useRouter()
 
 <template>
   <header class="site-header">
+    <div class="logo-container">
+      <img src="../assets/img/site-logo.png" alt="Logo du site" class="site-logo" />
+    </div>
     <nav class="centered-nav">
       <button class="nav-button" @click="router.push('/pokedex-national')">Pokédex National</button>
       <button class="nav-button" @click="router.push('/jcc-pokemon')">JCC Pokémon</button>
     </nav>
+    <button class="login-button" @click="router.push('/login')">Signup / Login</button>
   </header>
 </template>
 
 <style scoped>
-.site-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 15px;
-  background-color: #ff6f61;
-  color: white;
-  border-bottom: 2px solid #ff5a50;
-}
+  .site-header {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #ff6f61;
+    color: white;
+    border-bottom: 2px solid #ff5a50;
+  }
 
-.centered-nav {
-  display: flex;
-  gap: 20px;
-}
+  .logo-container {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 2%;
+  }
+
+  .site-logo {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .centered-nav {
+    display: flex;
+    gap: 20px;
+  }
 
 .nav-button {
   background: none;
@@ -54,11 +74,36 @@ const router = useRouter()
   transition: width 0.3s ease;
 }
 
-.nav-button:hover::after {
-  width: 100%;
+  .nav-button:hover::after {
+  width: 50%;
 }
 
-.nav-button:hover {
-  color: white;
-}
+  .nav-button:hover {
+    color: #ffe5e0;
+  }
+
+  .login-button {
+    background: #d32f2f;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    position: absolute;
+    right: 2%;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+  }
+
+  .login-button:hover {
+    background-color: #b71c1c;
+    transform: scale(1.05);
+  }
+
+  .login-button:active {
+    transform: scale(1);
+    background-color: #9a0007;
+  }
 </style>
