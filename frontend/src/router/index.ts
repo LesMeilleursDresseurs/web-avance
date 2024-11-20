@@ -22,6 +22,16 @@ const router = createRouter({
       path: '/series',
       component : () => import('../views/ListSeriesView.vue'),
     }
+      path: '/poke',
+      name: 'poke',
+      component: () => import('../views/ListPoke.vue'),
+    },
+    {
+      path: '/poke/:id',
+      name: 'PokeDetail',
+      component: () => import('../views/PokeDetail.vue'),
+      props: (route) => ({ id: Number(route.params.id) }),
+    },
   ],
 })
 
