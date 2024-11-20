@@ -31,7 +31,7 @@ export default defineComponent({
     },
   },
   methods: {
-    callback(response) {
+    async callback(response) {
       const userData = decodeCredential(response.credential)
       await store.dispatch('login/logIn', userData)
       if (this.error !== null) {
