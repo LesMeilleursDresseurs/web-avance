@@ -45,7 +45,6 @@ async function fetchPokemons() {
     }),
   )
   pokemons.value = [...pokemons.value, ...pokemonDetails]
-  console.log('offset', offset)
   offset += limit
   setTimeout(() => {
     isLoading.value = false
@@ -61,7 +60,6 @@ onMounted(() => {
     ) {
       isLoading.value = true
       await fetchPokemons()
-      console.log('event')
     }
   })
 })
