@@ -17,36 +17,36 @@ const router = useRouter()
 </template>
 
 <style scoped>
-  .site-header {
-    display: flex;
-    position: relative;
-    justify-content: center;
-    align-items: center;
-    padding: 15px 20px;
-    background-color: #ff6f61;
-    color: white;
-    border-bottom: 2px solid #ff5a50;
-  }
+.site-header {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #ff6f61;
+  color: white;
+  border-bottom: 2px solid #ff5a50;
+}
 
-  .logo-container {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    left: 2%;
-  }
+.logo-container {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: 2%;
+}
 
-  .site-logo {
-    height: 50px;
-    width: auto;
-    object-fit: contain;
-  }
+.site-logo {
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+}
 
-  .centered-nav {
-    display: flex;
-    gap: 20px;
-  }
+.centered-nav {
+  display: flex;
+  gap: 20px;
+}
 
 .nav-button {
   background: none;
@@ -74,36 +74,36 @@ const router = useRouter()
   transition: width 0.3s ease;
 }
 
-  .nav-button:hover::after {
+.nav-button:hover::after {
   width: 50%;
 }
 
-  .nav-button:hover {
-    color: #ffe5e0;
-  }
+.nav-button:hover {
+  color: #ffe5e0;
+}
 
-  .login-button {
-    background: #d32f2f;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
-    position: absolute;
-    right: 2%;
-    text-transform: uppercase;
-    transition: all 0.3s ease;
-  }
+.login-button {
+  background: #d32f2f;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  position: absolute;
+  right: 2%;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
 
-  .login-button:hover {
-    background-color: #b71c1c;
-    transform: scale(1.05);
-  }
+.login-button:hover {
+  background-color: #b71c1c;
+  transform: scale(1.05);
+}
 
-  .login-button:active {
-    transform: scale(1);
-    background-color: #9a0007;
-  }
+.login-button:active {
+  transform: scale(1);
+  background-color: #9a0007;
+}
 </style>
