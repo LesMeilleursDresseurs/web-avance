@@ -7,35 +7,39 @@
         <p class="no-pico">to access your pokedex 🔥</p>
       </div>
       <div v-if="!loading">
-        <GoogleLogin :callback="callback" prompt class="google-btn"/>
+        <GoogleLogin :callback="callback" prompt class="google-btn" />
         <p v-if="error !== null" class="error-msg">{{ error }}</p>
       </div>
-      <img class="loader" src="@/assets/loader.gif" alt="logo" v-if="loading">
+      <img class="loader" src="@/assets/loader.gif" alt="logo" v-if="loading" />
     </div>
   </main>
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
-import store from "@/store";
+import { defineComponent } from 'vue'
+import store from '@/store'
 import { decodeCredential } from 'vue3-google-login'
 
 export default defineComponent({
-  name: "LoginPage",
+  name: 'LoginPage',
   computed: {
-    error : () => { return store.getters['login/getError'] },
-    loading: () => { return store.getters['login/getLoading'] }
+    error: () => {
+      return store.getters['login/getError']
+    },
+    loading: () => {
+      return store.getters['login/getLoading']
+    },
   },
   methods: {
     callback(response) {
       const userData = decodeCredential(response.credential)
       await store.dispatch('login/logIn', userData)
-      if(this.error !== null) {
+      if (this.error !== null) {
         // TODO: change the path
         this.$router.push('/')
       }
     },
-  }
+  },
 })
 </script>
 
@@ -51,7 +55,7 @@ main {
 }
 
 span {
-  background-image: url("@/assets/img/login-wallpaper.jpg");
+  background-image: url('@/assets/img/login-wallpaper.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -96,9 +100,10 @@ div.form {
   0% {
     backdrop-filter: blur(0px);
     opacity: 0;
-  } 100% {
+  }
+  100% {
     backdrop-filter: blur(40px);
-  opacity: 1;
+    opacity: 1;
   }
 }
 </style>

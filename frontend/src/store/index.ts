@@ -1,7 +1,7 @@
 import { createStore } from 'vuex'
-import login from "./modules/Login"
+import login from './modules/Login'
 
-export const API_URL = 'http://localhost:3000';
+export const API_URL = 'http://localhost:3000'
 
 export default createStore({
   state: {},
@@ -9,6 +9,6 @@ export default createStore({
   actions: {},
   mutations: {},
   modules: {
-    login
+    login,
   },
 })

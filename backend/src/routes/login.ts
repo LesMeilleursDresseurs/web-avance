@@ -1,9 +1,5 @@
 import { server } from '../providers/server';
-import {
-  postUserSchema,
-  postUserSchemaResponse,
-  errorResponseSchema,
-} from '../schemas/schemas';
+import { postUserSchema, postUserSchemaResponse, errorResponseSchema } from '../schemas/schemas';
 import { db } from '../providers/db';
 
 server.post(
@@ -16,7 +12,7 @@ server.post(
         400: errorResponseSchema,
       },
       tags: ['Login'],
-    }
+    },
   },
   async (request, reply): Promise<userResponse> => {
     const { email, picture, firstname, lastname } = request.body; // Changez ici pour `body`
@@ -30,7 +26,8 @@ server.post(
         where: { email },
       });
 
-      if (user) { // update
+      if (user) {
+        // update
         user = await db.user.update({
           where: { email },
           data: {
@@ -39,7 +36,8 @@ server.post(
             lastname: lastname,
           },
         });
-      } else { // create
+      } else {
+        // create
         user = await db.user.create({
           data: {
             email: email,
@@ -53,6 +51,5 @@ server.post(
     } catch (error) {
       return reply.status(500).send({ error: 'An error occurred' });
     }
-  }
+  },
 );
-
