@@ -54,7 +54,7 @@ span {
 }
 
 div.form {
-  color: white;
+  color: white !important;
   width: 400px;
   height: 40%;
   display: flex;
@@ -66,6 +66,10 @@ div.form {
   border-radius: 10px;
   animation: blur-effect 0.5s forwards;
   //background-color: rgba(255, 255, 255, 0.2); /* 10% opacity */
+}
+
+div.from h3 {
+  color: white !important;
 }
 
 @keyframes blur-effect {
