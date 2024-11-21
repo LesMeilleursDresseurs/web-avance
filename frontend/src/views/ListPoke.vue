@@ -4,18 +4,35 @@
 
   <!--Filtre-->
   <div class="filter-bar">
+    <!--Recherche textuelle par nom ou ID-->
     <input
     type="text"
     v-model="recherchePokemonRequete"
-    @input="recherchePokemon"
+    @input="filterAndSearch"
     placeholder="Search Pokémon by name or ID..."
     class="search-input"
     />
+
+    <!--Recherche par génération-->
+    <div class="generation-filter">
+      <span>Generation : </span>
+      <button @click="selectAllGenerations">All</button>
+      <button @click="clearGenerations">None</button>
+      <label v-for="gen in generations" :key="gen.value">
+          <input
+            type="checkbox"
+            :value="gen.value"
+            v-model="selectedGenerations"
+            @change="filterAndSearch"
+          />
+        {{ gen.label }}
+      </label>
+    </div>
   </div>
 
   <div class="grid">
     <article
-      v-for="pokemon in (recherchePokemonResult.length > 0 ? recherchePokemonResult : pokemons)"
+      v-for="pokemon in getDisplayPokemons()"
       :key="pokemon.id"
       class="card"
       @click="viewPokemonDetails(pokemon.id)"
@@ -33,9 +50,9 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, onUnmounted, ref} from 'vue'
-import MenuTopBar from '@/components/MenuTopBar.vue'
-import { useRouter } from 'vue-router'
+import {onMounted, ref} from 'vue';
+import MenuTopBar from '@/components/MenuTopBar.vue';
+import { useRouter } from 'vue-router';
 
 // Information récupérées d'un Pokémon
 interface Pokemon {
@@ -45,16 +62,27 @@ interface Pokemon {
 }
 
 // Variables
-const router = useRouter()
-const pokemons = ref<Pokemon[]>([])// Pokémon actuellement affichés sur la page
-const limit = 20 // Number of Pokémon per page
-let offset = 0 // Start
-const isLoading = ref(true)
-const recherchePokemonRequete = ref('')
-const recherchePokemonResult = ref<Pokemon[]>([])
+const router = useRouter();
+const allPokemons = ref<Pokemon[]>([]); // Tous les Pokémons
+const displayedPokemons = ref<Pokemon[]>([]); // Pokémon affichés après filtres éventuels
+const isLoading = ref(true);
+const recherchePokemonRequete = ref('');
+const generations = ref([
+  { label: "1", value: 1},
+  { label: "2", value: 2},
+  { label: "3", value: 3},
+  { label: "4", value: 4},
+  { label: "5", value: 5},
+  { label: "6", value: 6},
+  { label: "7", value: 7},
+  { label: "8", value: 8},
+  { label: "9", value: 9},
+]);
+const selectedGenerations = ref<number[]>(generations.value.map((gen) => gen.value));
+const visibleCount = ref(20) // Nombre de Pokémon visible au chargement de la page
 
 // Chargement des Pokémon par bloc de 20
-async function fetchPokemons() {
+/*async function fetchPokemons() {
   const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
   const data = await response.json()
   const pokemonDetails = await Promise.all(
@@ -72,10 +100,37 @@ async function fetchPokemons() {
   setTimeout(() => {
     isLoading.value = false
   }, 4000)
+}*/
+
+async function fetchAllPokemons() {
+  try {
+    const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=1025");
+    if (!response.ok) throw new Error("Erreur lors du chargement des Pokémon");
+    const data = await response.json();
+
+     // Charger les détails de chaque Pokémon
+    const pokemonDetails = await Promise.all(
+      data.results.map(async (pokemon) => {
+        const pokemonData = await fetch(pokemon.url).then((res) => res.json());
+        return {
+          id: pokemonData.id,
+          name: pokemonData.name,
+          image: pokemonData.sprites.front_default || "",
+        };
+      })
+    );
+
+    allPokemons.value = pokemonDetails; // Stockage des Pokémon
+    displayedPokemons.value = pokemonDetails; // Initialiser la liste à afficher
+    isLoading.value = false;
+  } catch (err) {
+    console.error("Erreur lors du chargement des Pokémon :", err);
+    isLoading.value = false;
+  }
 }
 
 // Filtre champ de recherche de Pokémon par nom exact ou ID
-async function recherchePokemon() {
+/*async function recherchePokemon() {
   const requete = recherchePokemonRequete.value.trim().toLowerCase()
 
   // Requete vide
@@ -103,26 +158,86 @@ async function recherchePokemon() {
   } finally {
     isLoading.value = false
   }
+}*/
+
+// Filtrage par génération
+function filterByGeneration(pokemons: Pokemon[]): Pokemon[] {
+  if (selectedGenerations.value.length === 0) {
+    return pokemons;
+  }
+
+  return pokemons.filter((pokemon) => {
+    const id = pokemon.id;
+    return (
+      (selectedGenerations.value.includes(1) && id >= 1 && id <= 151) ||
+      (selectedGenerations.value.includes(2) && id >= 152 && id <= 251) ||
+      (selectedGenerations.value.includes(3) && id >= 252 && id <= 386) ||
+      (selectedGenerations.value.includes(4) && id >= 387 && id <= 493) ||
+      (selectedGenerations.value.includes(5) && id >= 494 && id <= 649) ||
+      (selectedGenerations.value.includes(6) && id >= 650 && id <= 721) ||
+      (selectedGenerations.value.includes(7) && id >= 722 && id <= 809) ||
+      (selectedGenerations.value.includes(8) && id >= 810 && id <= 905) ||
+      (selectedGenerations.value.includes(9) && id >= 906 && id <= 1025)
+    );
+  });
+}
+
+// Filtrage par recherche textuelle
+function filterBySearch(pokemons: Pokemon[]): Pokemon[] {
+  const query = recherchePokemonRequete.value.trim().toLowerCase();
+  if (!query) {
+    return pokemons; // Aucun texte recherché, afficher tous les Pokémon
+  }
+
+  return pokemons.filter(
+    (pokemon) =>
+      pokemon.name.toLowerCase().includes(query) ||
+      pokemon.id.toString() === query
+  );
+}
+
+// Combinaison des filtres
+function filterAndSearch() {
+  let filtered = filterByGeneration(allPokemons.value);
+  filtered = filterBySearch(filtered);
+  displayedPokemons.value = filtered;
+}
+
+function selectAllGenerations() {
+  selectedGenerations.value = generations.value.map((gen) => gen.value);
+  filterAndSearch();
+}
+
+function clearGenerations() {
+  selectedGenerations.value = [];
+  displayedPokemons.value = [];
+}
+
+function getDisplayPokemons(): Pokemon[] {
+  return displayedPokemons.value.slice(0, visibleCount.value);
+}
+
+function loadMorePokemons() {
+  visibleCount.value += 20;
 }
 
 onMounted(async () => {
   console.log('Chargement intial')
-  await fetchPokemons() // Affichage initial
+  fetchAllPokemons();
 
-  window.addEventListener('scroll', async () => {
+  window.addEventListener("scroll", () => {
     if (
       window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
-      !isLoading.value
+      visibleCount.value < displayedPokemons.value.length
     ) {
-      isLoading.value = true
-      await fetchPokemons()
+      loadMorePokemons();
     }
-  })
-})
+  });
+});
 
-onUnmounted(() => {
-  window.removeEventListener('scroll', () => {})
-})
+// onUnmounted(() => {
+  // window.removeEventListener('scroll', () => {})
+// })
 
 function viewPokemonDetails(id) {
   console.log(`Navigate to Pokémon details using the ID : ${id}`)
