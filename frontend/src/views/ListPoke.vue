@@ -1,9 +1,21 @@
 <template>
   <MenuTopBar />
-  <h1>Pokemon List</h1>
+  <h1>National Pokédex</h1>
+
+  <!--Filtre-->
+  <div class="filter-bar">
+    <input
+    type="text"
+    v-model="recherchePokemonRequete"
+    @input="recherchePokemon"
+    placeholder="Search Pokemon by name..."
+    class="search-input"
+    />
+  </div>
+
   <div class="grid">
     <article
-      v-for="pokemon in pokemons"
+      v-for="pokemon in (recherchePokemonRequete ? recherchePokemonResult : pokemons)"
       :key="pokemon.id"
       class="card"
       @click="viewPokemonDetails(pokemon.id)"
@@ -21,15 +33,23 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
+import {onMounted, onUnmounted, ref} from 'vue'
 import MenuTopBar from '@/components/MenuTopBar.vue'
 import { useRouter } from 'vue-router'
 
+interface Pokemon {
+  id: number
+  name: string
+  image: string
+}
+
 const router = useRouter()
-const pokemons = ref([])
-const limit = 20 // Number of Pokemon per page
+const pokemons = ref<Pokemon[]>([])// Pokémon actuellement affichés sur la page
+const limit = 20 // Number of Pokémon per page
 let offset = 0 // Start
 const isLoading = ref(true)
+const recherchePokemonRequete = ref('')
+const recherchePokemonResult = ref<Pokemon[]>([])
 
 async function fetchPokemons() {
   const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
@@ -50,6 +70,31 @@ async function fetchPokemons() {
   setTimeout(() => {
     isLoading.value = false
   }, 4000)
+}
+
+// Recherche Pokémon
+async function recherchePokemon() {
+  if(!recherchePokemonRequete.value.trim()) {
+    recherchePokemonResult.value = [] // Si le champs de recherche est vide
+    return
+  }
+  isLoading.value = true
+  try {
+    const reponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${recherchePokemonRequete.value.toLowerCase()}`)
+    if(!reponse.ok) throw new Error('Pokemon not found')
+    const pokemonData = await reponse.json()
+    recherchePokemonResult.value = [
+      {
+        id: pokemonData.id,
+        name: pokemonData.name,
+        image: pokemonData.sprites.front_default || '',
+      },
+    ]
+  } catch (err) {
+    recherchePokemonResult.value = []
+  } finally {
+    isLoading.value = false
+  }
 }
 
 onMounted(() => {
@@ -90,6 +135,26 @@ h1 {
   text-align: center;
   margin: 1rem auto;
   font-size: 1.8vw;
+}
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0.5rem;
+  background: white;
+  border-radius: 5px;
+  width: 90%;
+  margin: auto;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  font-size: 1rem;
 }
 
 header {
