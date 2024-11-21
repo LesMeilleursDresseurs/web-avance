@@ -8,14 +8,14 @@
     type="text"
     v-model="recherchePokemonRequete"
     @input="recherchePokemon"
-    placeholder="Search Pokemon by name..."
+    placeholder="Search Pokémon by name or ID..."
     class="search-input"
     />
   </div>
 
   <div class="grid">
     <article
-      v-for="pokemon in (recherchePokemonRequete ? recherchePokemonResult : pokemons)"
+      v-for="pokemon in (recherchePokemonResult.length > 0 ? recherchePokemonResult : pokemons)"
       :key="pokemon.id"
       class="card"
       @click="viewPokemonDetails(pokemon.id)"
@@ -37,12 +37,14 @@ import {onMounted, onUnmounted, ref} from 'vue'
 import MenuTopBar from '@/components/MenuTopBar.vue'
 import { useRouter } from 'vue-router'
 
+// Information récupérées d'un Pokémon
 interface Pokemon {
   id: number
   name: string
   image: string
 }
 
+// Variables
 const router = useRouter()
 const pokemons = ref<Pokemon[]>([])// Pokémon actuellement affichés sur la page
 const limit = 20 // Number of Pokémon per page
@@ -51,6 +53,7 @@ const isLoading = ref(true)
 const recherchePokemonRequete = ref('')
 const recherchePokemonResult = ref<Pokemon[]>([])
 
+// Chargement des Pokémon par bloc de 20
 async function fetchPokemons() {
   const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
   const data = await response.json()
@@ -65,23 +68,27 @@ async function fetchPokemons() {
     }),
   )
   pokemons.value = [...pokemons.value, ...pokemonDetails]
-  console.log('offset', offset)
   offset += limit
   setTimeout(() => {
     isLoading.value = false
   }, 4000)
 }
 
-// Recherche Pokémon
+// Filtre champ de recherche de Pokémon par nom exact ou ID
 async function recherchePokemon() {
-  if(!recherchePokemonRequete.value.trim()) {
+  const requete = recherchePokemonRequete.value.trim().toLowerCase()
+
+  // Requete vide
+  if(!requete) {
     recherchePokemonResult.value = [] // Si le champs de recherche est vide
     return
   }
+
   isLoading.value = true
   try {
-    const reponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${recherchePokemonRequete.value.toLowerCase()}`)
+    const reponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${requete}`)
     if(!reponse.ok) throw new Error('Pokemon not found')
+
     const pokemonData = await reponse.json()
     recherchePokemonResult.value = [
       {
@@ -89,16 +96,19 @@ async function recherchePokemon() {
         name: pokemonData.name,
         image: pokemonData.sprites.front_default || '',
       },
-    ]
+    ];
   } catch (err) {
+    console.error("Erreur lors de la recherche : ", err)
     recherchePokemonResult.value = []
   } finally {
     isLoading.value = false
   }
 }
 
-onMounted(() => {
-  fetchPokemons()
+onMounted(async () => {
+  console.log('Chargement intial')
+  await fetchPokemons() // Affichage initial
+
   window.addEventListener('scroll', async () => {
     if (
       window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
@@ -106,7 +116,6 @@ onMounted(() => {
     ) {
       isLoading.value = true
       await fetchPokemons()
-      console.log('event')
     }
   })
 })
