@@ -7,7 +7,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('../views/Login.vue'),
+      component: () => import('../views/ListPoke.vue'),
     },
     {
       path: '/about',
@@ -22,9 +22,9 @@ const router = createRouter({
       component: () => import('../views/ListSeriesView.vue'),
     },
     {
-      path: '/poke',
-      name: 'poke',
-      component: () => import('../views/ListPoke.vue'),
+      path: '/login',
+      name: 'LoginPage',
+      component: () => import('../views/Login.vue'),
     },
     {
       path: '/poke/:id',

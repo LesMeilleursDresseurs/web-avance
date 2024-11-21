@@ -25,6 +25,8 @@ const router = useRouter()
   padding: 15px 20px;
   background-color: #ff6f61;
   color: white;
+  width: 100%;
+  z-index: 2;
   border-bottom: 2px solid #ff5a50;
 }
 

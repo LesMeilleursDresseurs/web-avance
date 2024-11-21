@@ -1,9 +1,11 @@
 <template>
   <RouterView />
+  <notification />
 </template>
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
+import notification from '@/components/Notification.vue'
 </script>
 
 <style>

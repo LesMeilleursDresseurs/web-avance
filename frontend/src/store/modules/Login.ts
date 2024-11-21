@@ -1,9 +1,9 @@
 import axios from 'axios'
 import { API_URL } from '../index'
+import router from '@/router'
 
 const state = {
   userConnected: {},
-  error: null,
   loading: false,
 }
 
@@ -11,18 +11,14 @@ const getters = {
   getUserConnected(state) {
     return state.userConnected
   },
-  getError(state) {
-    return state.error
-  },
   getLoading(state) {
     return state.loading
   },
 }
 
 const actions = {
-  async logIn({ commit }, userData) {
+  async logIn({ commit, dispatch }, userData) {
     await commit('setLoading', true)
-    await commit('setError', null)
     const user = {
       email: userData.email,
       picture: userData.picture,
@@ -33,9 +29,25 @@ const actions = {
       .post(`${API_URL}/login`, user)
       .then(async (response) => {
         await commit('setUserConnected', response)
+        router.push('/')
+        await dispatch(
+          'notification/newNotification',
+          {
+            message: 'Connection successfull',
+            good: true,
+          },
+          { root: true },
+        )
       })
       .catch(async (e) => {
-        await commit('setError', e.response.data.error)
+        await dispatch(
+          'notification/newNotification',
+          {
+            message: 'Error of connection',
+            good: false,
+          },
+          { root: true },
+        )
       })
       .finally(async () => {
         setTimeout(() => {
@@ -53,9 +65,6 @@ const mutations = {
       firstname: value.family_name,
       lastname: value.given_name,
     }
-  },
-  setError(state, value) {
-    state.error = value
   },
   setLoading(state, value) {
     state.loading = value
