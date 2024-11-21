@@ -47,6 +47,21 @@
                 </span>
               </div>
             </div>
+            <div v-if="card.evolveFrom">
+              <h2>Evolve From</h2>
+              <span class="card-evolvefrom">
+                {{ card.evolveFrom }}
+                <img
+                  :src="evolveFromPokemon.image"
+                  :alt="evolveFromPokemon.name"
+                  class="card-img"
+                />
+              </span>
+              <span class="card-evolvefrom">
+                {{ card.name }}
+                <img :src="initialPokemon.image" :alt="initialPokemon.name" class="card-img" />
+              </span>
+            </div>
           </div>
         </section>
 
@@ -61,16 +76,29 @@
 
 <script>
 export default {
+  data() {
+    return {
+      initialPokemon: Object,
+      evolveFromPokemon: Object,
+    }
+  },
   name: 'Modal',
   props: {
     card: Object,
   },
-
-  // async mounted() {
-  //   const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${card.evolveFrom}`)
-  //   const data = await response.json()
-  //   console.log(data)
-  // },
+  watch: {
+    card: {
+      handler(card) {
+        if (card && card.name) {
+          this.fetchinitialPokemon(card.name)
+        }
+        if (card && card.evolveFrom) {
+          this.fetchEvolvePokemon(card.evolveFrom)
+        }
+      },
+      immediate: true,
+    },
+  },
   methods: {
     close() {
       this.$emit('close')
@@ -118,6 +146,37 @@ export default {
           return 'badge-wPromo'
         default:
           return 'badge-default'
+      }
+    },
+    async fetchinitialPokemon(pokemonName) {
+      try {
+        const response = await fetch(
+          `https://pokeapi.co/api/v2/pokemon/${pokemonName.toLowerCase()}`,
+        )
+        const pokemon = await response.json()
+        this.initialPokemon = {
+          id: pokemon.id,
+          name: pokemon.name,
+          image: pokemon.sprites.front_default || '',
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données :', error)
+      }
+    },
+    async fetchEvolvePokemon(evolveFrom) {
+      try {
+        const response = await fetch(
+          `https://pokeapi.co/api/v2/pokemon/${evolveFrom.toLowerCase()}`,
+        )
+        const pokemon = await response.json()
+        this.evolveFromPokemon = {
+          id: pokemon.id,
+          name: pokemon.name,
+          image: pokemon.sprites.front_default || '',
+        }
+        console.log(pokemon)
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données :', error)
       }
     },
   },
@@ -283,12 +342,6 @@ export default {
 .badge-reverse {
   border: 2px solid #332f2f;
   background-color: transparent;
-  transform: scale(-1, 1);
-  -moz-transform: scale(-1, 1);
-  -webkit-transform: scale(-1, 1);
-  -o-transform: scale(-1, 1);
-  -ms-transform: scale(-1, 1);
-  transform: scale(-1, 1);
 }
 .badge-firstEdition {
   border: 2px solid #6493eb;
