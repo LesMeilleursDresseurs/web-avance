@@ -13,8 +13,20 @@ export const configurePlugins = async () => {
     swagger: {
       consumes: ['application/json'],
       produces: ['application/json'],
-      tags: [{ name: 'Example', description: 'Example end-points' }],
-      tags: [{ name: 'Login', description: 'User authentification end-points' }],
+      tags: [
+        {
+          name: 'Example',
+          description: 'Example end-points',
+        },
+        {
+          name: 'Login',
+          description: 'User authentification end-points',
+        },
+        {
+          name: 'CardCollection',
+          description: 'Card collection end-points',
+        },
+      ],
     },
   });
   await server.register(cors);
