@@ -17,8 +17,7 @@
           </p>
         </div>
         <div class="stats">
-          <p><strong>Total </strong>cards:</p>
-          <p><strong>Total </strong>Pokemon:</p>
+          <p><strong>Total </strong>cards: {{ cardsCollection.length }}</p>
         </div>
       </div>
       <div class="content">
@@ -39,7 +38,13 @@ export default {
   computed: {
     userConnected: () => {
       return store.getters['login/getUserConnected']
+    },
+    cardsCollection: () => {
+      return store.getters['pokedex/getCardsCollection']
     }
+  },
+  mounted() {
+    store.dispatch('pokedex/getCardsCollection', this.userConnected.id)
   }
 }
 

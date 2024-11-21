@@ -6,7 +6,7 @@ server.post(
   '/login',
   {
     schema: {
-      body: postUserSchema, // Changez ici pour `body`
+      body: postUserSchema,
       response: {
         200: postUserSchemaResponse,
         400: errorResponseSchema,

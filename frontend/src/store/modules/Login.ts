@@ -56,6 +56,7 @@ const actions = {
         }, 1000)
       })
   },
+
   async logOut({ commit }) {
     await localStorage.removeItem('userConnected');
     commit('setUserConnected', {});
