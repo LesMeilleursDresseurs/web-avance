@@ -32,6 +32,11 @@ const router = createRouter({
       component: () => import('../views/PokeDetail.vue'),
       props: (route) => ({ id: Number(route.params.id) }),
     },
+    {
+      path: '/Profile',
+      name: 'ProfilePage',
+      component: () => import('../views/Profile.vue'),
+    },
   ],
 })
 

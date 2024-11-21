@@ -22,13 +22,11 @@ import store from '@/store'
 import { defineComponent } from 'vue'
 import { decodeCredential } from 'vue3-google-login'
 import MenuTopBar from '@/components/MenuTopBar.vue'
-import Notification from '@/components/Notification.vue'
 
 export default defineComponent({
   name: 'LoginPage',
   components: {
     MenuTopBar,
-    Notification,
   },
   computed: {
     loading: () => {
