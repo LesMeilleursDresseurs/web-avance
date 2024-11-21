@@ -4,19 +4,7 @@
     <h1>{{ name }}</h1>
     <div class="gridContainer">
       <div class="grid">
-        <div class="cardBox" v-for="card in cards" v-bind:key="card.id" @click="() => null">
-          <img
-            v-if="card.image"
-            :src="`${card.image}/low.webp`"
-            :alt="card.name"
-            class="cardImg"
-            :class="{ bigImg: hover === card.id }"
-          />
-          <div v-else>
-            <h4>{{ card.name }}</h4>
-            <h4>{{ card.id }}</h4>
-          </div>
-        </div>
+        <PokemonCard :card="card" v-for="card in cards" :key="card.id" />
       </div>
     </div>
     <div v-if="isLoading" class="loading"><img src="@/assets/loader.gif" alt="loader" /></div>
@@ -25,13 +13,11 @@
 
 <script lang="ts">
 import MenuTopBar from '@/components/MenuTopBar.vue'
+import PokemonCard, { type Card } from '@/components/Card.vue'
 
 type CardBrief = {
-  id: string
   localId: string
-  name: string
-  image: string
-}
+} & Card
 
 interface IState {
   cards: Array<CardBrief>
@@ -44,7 +30,7 @@ interface IState {
 const itemPerPage = 20
 
 export default {
-  components: { MenuTopBar },
+  components: { PokemonCard, MenuTopBar },
   data(): IState {
     return {
       cards: [],
@@ -102,30 +88,6 @@ export default {
   flex-wrap: wrap;
   justify-content: center;
   gap: 1rem;
-}
-
-.cardBox {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 250px;
-  border-radius: 10px;
-  cursor: pointer;
-  gap: 1rem;
-  padding: 10px;
-  background-color: #424242;
-  transition: transform 0.2s;
-}
-
-.cardImg {
-  width: 100%;
-  height: 100%;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-}
-
-.cardBox:hover {
-  transform: scale(1.15);
 }
 
 h1 {
