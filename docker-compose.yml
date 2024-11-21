@@ -1,0 +1,17 @@
+
+services:
+  fastify:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/project:cached
+      - /backend/node_modules
+
+  vue:
+    build: ./frontend/
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/project
+      - /frontend/node_modules

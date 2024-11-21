@@ -4,7 +4,7 @@
     <div class="form">
       <div>
         <h3 class="no-pico">Sign up / Log in</h3>
-        <p class="no-pico">to access your pokedex 🔥</p>
+        <p class="no-pico">to access to your pokedex 🔥</p>
       </div>
       <div v-if="!loading">
         <GoogleLogin :callback="callback" prompt class="google-btn" />
