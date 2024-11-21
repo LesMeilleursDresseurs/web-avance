@@ -129,6 +129,10 @@ div.idPoke {
   transform: scale(1.2);
 }
 
+.card footer {
+  margin-top: 0;
+}
+
 .card footer h4 {
   font-size: 1.4vw;
   margin-bottom: 0;
