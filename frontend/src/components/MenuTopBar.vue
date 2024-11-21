@@ -76,6 +76,9 @@ export default {
 </script>
 
 <style scoped>
+header {
+  z-index: 2;
+}
 .site-header {
   display: flex;
   position: relative;

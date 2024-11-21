@@ -19,6 +19,7 @@ const router = createRouter({
     },
     {
       path: '/series',
+      name: 'Series',
       component: () => import('../views/ListSeriesView.vue'),
     },
     {
@@ -27,10 +28,16 @@ const router = createRouter({
       component: () => import('../views/Login.vue'),
     },
     {
-      path: '/poke/:id',
+      path: '/poke/:name',
       name: 'PokeDetail',
       component: () => import('../views/PokeDetail.vue'),
-      props: (route) => ({ id: Number(route.params.id) }),
+      props: (route) => ({ name: String(route.params.name) }),
+    },
+    {
+      path: '/series/:id',
+      name: 'CardsOfSerie',
+      component: () => import('../views/CardsOfSerie.vue'),
+      props: (route) => ({ id: String(route.params.id) }),
     },
     {
       path: '/Profile',
