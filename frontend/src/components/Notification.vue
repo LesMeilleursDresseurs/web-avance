@@ -31,7 +31,7 @@ export default {
 
 <style scoped>
 .notification-container {
-  position: absolute;
+  position: fixed;
   right: 7px;
   top: 70px;
   height: auto;

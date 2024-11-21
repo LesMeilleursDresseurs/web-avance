@@ -3,7 +3,7 @@ import { API_URL } from '../index'
 import router from '@/router'
 
 const state = {
-  userConnected: {},
+  userConnected: JSON.parse(localStorage.getItem('userConnected')) || {},
   loading: false,
 }
 
@@ -22,14 +22,15 @@ const actions = {
     const user = {
       email: userData.email,
       picture: userData.picture,
-      firstname: userData.family_name,
-      lastname: userData.given_name,
+      firstname: userData.given_name,
+      lastname: userData.family_name,
     }
     axios
       .post(`${API_URL}/login`, user)
       .then(async (response) => {
-        await commit('setUserConnected', response)
-        router.push('/')
+        await commit('setUserConnected', response.data)
+        localStorage.setItem('userConnected', JSON.stringify(response.data));
+        await router.push('/')
         await dispatch(
           'notification/newNotification',
           {
@@ -39,7 +40,7 @@ const actions = {
           { root: true },
         )
       })
-      .catch(async (e) => {
+      .catch(async () => {
         await dispatch(
           'notification/newNotification',
           {
@@ -55,16 +56,16 @@ const actions = {
         }, 1000)
       })
   },
+  async logOut({ commit }) {
+    await localStorage.removeItem('userConnected');
+    commit('setUserConnected', {});
+    router.push('/login');
+  }
 }
 
 const mutations = {
   setUserConnected(state, value) {
-    state.userConnected = {
-      email: value.email,
-      picture: value.picture,
-      firstname: value.family_name,
-      lastname: value.given_name,
-    }
+    state.userConnected = value
   },
   setLoading(state, value) {
     state.loading = value
