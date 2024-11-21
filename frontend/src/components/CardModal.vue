@@ -73,6 +73,7 @@
 
       <footer class="modal-footer">
         <slot name="footer"> This is the default footer! </slot>
+        <Accordion title="Others Cards of "> Contenu de la section 1 </Accordion>
         <button type="button" class="btn-green" @click="close">Close Modal</button>
       </footer>
     </div>
@@ -80,6 +81,7 @@
 </template>
 <script>
 import { colors } from '@/constants/constants'
+import Accordion from './Accordion.vue'
 export default {
   data() {
     return {
@@ -91,15 +93,21 @@ export default {
   props: {
     card: Object,
   },
+  components: {
+    Accordion,
+  },
   watch: {
     card: {
       handler(card) {
         console.log(card)
         if (card && card.name) {
-          this.fetchinitialPokemon(card.name)
+          this.fetchInitialPokemon(card.name)
         }
         if (card && card.evolveFrom) {
           this.fetchEvolvePokemon(card.evolveFrom)
+        }
+        if (card && card.name) {
+          this.fetchOthersCard(card.name)
         }
       },
       immediate: true,
@@ -109,7 +117,7 @@ export default {
     close() {
       this.$emit('close')
     },
-    async fetchinitialPokemon(pokemonName) {
+    async fetchInitialPokemon(pokemonName) {
       try {
         const response = await fetch(
           `https://pokeapi.co/api/v2/pokemon/${pokemonName.toLowerCase()}`,
@@ -138,6 +146,17 @@ export default {
           type: pokemon.types[0].type.name || 'normal',
         }
         console.log(pokemon)
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données :', error)
+      }
+    },
+    async fetchOthersCard(name) {
+      try {
+        const response = await fetch(
+          `https://api.tcgdex.net/v2/en/cards?name=${name}&category=Pokemon`,
+        )
+        const data = await response.json()
+        console.log(data)
       } catch (error) {
         console.error('Erreur lors de la récupération des données :', error)
       }
@@ -321,24 +340,24 @@ export default {
 @media (max-width: 768px) {
   .modal-body {
     flex-direction: column;
-    padding: 20px 10px; /* Ajuste l'espacement si nécessaire */
+    padding: 20px 10px;
   }
 
   .left-section,
   .right-section {
-    border: none; /* Supprime la bordure sur les petits écrans */
+    border: none;
     padding: 0;
     margin: 0;
   }
 
   .left-section {
     display: flex;
-    justify-content: center; /* Centrer l'image sur petits écrans */
+    justify-content: center;
     padding-bottom: 10px;
   }
 
   .right-section {
-    margin-top: 20px; /* Ajoute un espace entre les sections */
+    margin-top: 20px;
   }
 
   .left-section img {
