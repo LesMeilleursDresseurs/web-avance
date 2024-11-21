@@ -17,6 +17,9 @@ const router = useRouter()
 </template>
 
 <style scoped>
+header {
+  z-index: 2;
+}
 .site-header {
   display: flex;
   position: relative;

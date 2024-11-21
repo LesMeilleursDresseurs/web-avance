@@ -1,7 +1,7 @@
 <template>
+  <MenuTopBar />
   <div>
     <h1>Series</h1>
-
     <div v-if="loading">Loading...</div>
     <div v-else-if="error">{{ error }}</div>
     <div v-else>
@@ -27,13 +27,22 @@
 </template>
 
 <script>
+import MenuTopBar from '@/components/MenuTopBar.vue'
+
 export default {
+  name: 'Series',
+  components: { MenuTopBar },
   data() {
     return {
       series: [],
       loading: true,
       error: null,
     }
+  },
+  methods: {
+    viewSerieDetails(id) {
+      this.$router.push({ name: 'CardsOfSerie', params: { id } })
+    },
   },
   async mounted() {
     try {
