@@ -1,9 +1,9 @@
 import axios from 'axios'
 import { API_URL } from '../index'
+import router from '@/router'
 
 const state = {
-  userConnected: {},
-  error: null,
+  userConnected: JSON.parse(localStorage.getItem('userConnected')) || {},
   loading: false,
 }
 
@@ -11,31 +11,44 @@ const getters = {
   getUserConnected(state) {
     return state.userConnected
   },
-  getError(state) {
-    return state.error
-  },
   getLoading(state) {
     return state.loading
   },
 }
 
 const actions = {
-  async logIn({ commit }, userData) {
+  async logIn({ commit, dispatch }, userData) {
     await commit('setLoading', true)
-    await commit('setError', null)
     const user = {
       email: userData.email,
       picture: userData.picture,
-      firstname: userData.family_name,
-      lastname: userData.given_name,
+      firstname: userData.given_name,
+      lastname: userData.family_name,
     }
     axios
       .post(`${API_URL}/login`, user)
       .then(async (response) => {
-        await commit('setUserConnected', response)
+        await commit('setUserConnected', response.data)
+        localStorage.setItem('userConnected', JSON.stringify(response.data))
+        await router.push('/')
+        await dispatch(
+          'notification/newNotification',
+          {
+            message: 'Connection successfull',
+            good: true,
+          },
+          { root: true },
+        )
       })
-      .catch(async (e) => {
-        await commit('setError', e.response.data.error)
+      .catch(async () => {
+        await dispatch(
+          'notification/newNotification',
+          {
+            message: 'Error of connection',
+            good: false,
+          },
+          { root: true },
+        )
       })
       .finally(async () => {
         setTimeout(() => {
@@ -43,14 +56,17 @@ const actions = {
         }, 1000)
       })
   },
+
+  async logOut({ commit }) {
+    await localStorage.removeItem('userConnected')
+    commit('setUserConnected', {})
+    router.push('/login')
+  },
 }
 
 const mutations = {
   setUserConnected(state, value) {
     state.userConnected = value
-  },
-  setError(state, value) {
-    state.error = value
   },
   setLoading(state, value) {
     state.loading = value

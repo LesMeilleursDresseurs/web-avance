@@ -1,31 +1,34 @@
 <template>
   <main>
-    <span></span>
-    <div class="form">
-      <div>
-        <h3 class="no-pico">Sign up / Log in</h3>
-        <p class="no-pico">to access to your pokedex 🔥</p>
+    <MenuTopBar />
+    <div class="body">
+      <span></span>
+      <div class="form">
+        <div>
+          <h3 class="no-pico">Sign up / Log in</h3>
+          <p class="no-pico">to access your pokedex 🔥</p>
+        </div>
+        <div v-if="!loading">
+          <GoogleLogin :callback="callback" prompt class="google-btn" />
+        </div>
+        <img class="loader" src="@/assets/loader.gif" alt="logo" v-if="loading" />
       </div>
-      <div v-if="!loading">
-        <GoogleLogin :callback="callback" prompt class="google-btn" />
-        <p v-if="error !== null" class="error-msg">{{ error }}</p>
-      </div>
-      <img class="loader" src="@/assets/loader.gif" alt="logo" v-if="loading" />
     </div>
   </main>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
 import store from '@/store'
+import { defineComponent } from 'vue'
 import { decodeCredential } from 'vue3-google-login'
+import MenuTopBar from '@/components/MenuTopBar.vue'
 
 export default defineComponent({
   name: 'LoginPage',
+  components: {
+    MenuTopBar,
+  },
   computed: {
-    error: () => {
-      return store.getters['login/getError']
-    },
     loading: () => {
       return store.getters['login/getLoading']
     },
@@ -34,24 +37,38 @@ export default defineComponent({
     async callback(response) {
       const userData = decodeCredential(response.credential)
       await store.dispatch('login/logIn', userData)
-      if (this.error !== null) {
-        // TODO: change the path
-        this.$router.push('/')
-      }
     },
   },
 })
 </script>
 
 <style scoped>
+header.site-header {
+  background-color: rgba(255, 111, 97, 0.7);
+  backdrop-filter: blur(10px);
+}
+
 main {
   margin: 0 0;
   padding: 0 0;
   width: 100vw;
   height: 100vh;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  overflow: hidden;
+}
+
+div.body {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: absolute;
+  z-index: 0;
 }
 
 span {
@@ -60,10 +77,14 @@ span {
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 5px;
-  top: 1%;
-  left: 0.5%;
-  width: 99%;
-  height: 98%;
+  //top: 1%;
+  //left: 0.5%;
+  //width: 99%;
+  //height: 98%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   position: absolute;
 }
 
