@@ -29,3 +29,21 @@ export const postUserSchemaResponse = t.Object({
 });
 
 export type userResponse = Static<typeof postUserSchemaResponse>;
+
+export const cardQuerySchema = t.Object({
+  userId: t.Integer(),
+  cardId: t.String(),
+});
+export const getCardsQuerySchema = t.Object({
+  userId: t.Integer(),
+});
+export const cardResponseSchema = t.Object({
+  message: t.String(),
+});
+export const getCardsResponseSchema = t.Object({
+  message: t.String(),
+  cards: t.Array(t.String()),
+});
+
+export type cardResponse = Static<typeof cardResponseSchema>;
+export type getCardResponse = Static<typeof getCardsResponseSchema>;
