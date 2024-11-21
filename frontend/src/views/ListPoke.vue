@@ -6,7 +6,7 @@
       v-for="pokemon in pokemons"
       :key="pokemon.id"
       class="card"
-      @click="viewPokemonDetails(pokemon.id)"
+      @click="viewPokemonDetails(pokemon.name)"
     >
       <header>
         <img :src="pokemon.image" :alt="pokemon.name" class="card-img" />
@@ -17,7 +17,7 @@
       <div class="idPoke">#{{ pokemon.id }}</div>
     </article>
   </div>
-  <div v-if="isLoading" class="loading"><img src="@/assets/loader.gif" /></div>
+  <div v-if="isLoading" class="loading"><img src="@/assets/loader.gif" alt="loader" /></div>
 </template>
 
 <script setup lang="ts">
@@ -68,9 +68,8 @@ onUnmounted(() => {
   window.removeEventListener('scroll', () => {})
 })
 
-function viewPokemonDetails(id) {
-  console.log(`Navigate to Pokémon details using the ID : ${id}`)
-  router.push({ name: 'PokeDetail', params: { id } })
+function viewPokemonDetails(name: string) {
+  router.push({ name: 'PokeDetail', params: { name } })
 }
 </script>
 
@@ -139,22 +138,5 @@ img.card-img {
   max-width: 100%;
   width: 10vw;
   image-rendering: pixelated;
-}
-
-button.secondary {
-  display: block;
-  margin: 2rem auto;
-  padding: 0.75rem 2rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.2s;
-}
-
-button.secondary:hover {
-  background-color: #0056b3;
 }
 </style>
