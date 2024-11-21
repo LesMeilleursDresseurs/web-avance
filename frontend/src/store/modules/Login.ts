@@ -47,12 +47,7 @@ const actions = {
 
 const mutations = {
   setUserConnected(state, value) {
-    state.userConnected = {
-      email: value.email,
-      picture: value.picture,
-      firstname: value.family_name,
-      lastname: value.given_name,
-    }
+    state.userConnected = value
   },
   setError(state, value) {
     state.error = value
