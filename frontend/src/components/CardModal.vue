@@ -49,14 +49,23 @@
           <div v-if="card.evolveFrom" class="card-evolvefrom">
             <h2>Evolve From</h2>
             <div class="evolution-pokemon">
-              <section class="child-pokemon-img">
-                {{ card.evolveFrom }}
-                <img :src="childPokemon.image" :alt="childPokemon.name" class="card-img" />
-              </section>
-              <section class="pokemon-initial-img">
-                {{ card.name }}
-                <img :src="initialPokemon.image" :alt="initialPokemon.name" class="card-img" />
-              </section>
+              <div class="evolve-from">
+                <section :style="getBackgroundColor(childPokemon.type)">
+                  <img :src="childPokemon.image" :alt="childPokemon.name" class="card-img" />
+                </section>
+                <div class="details-pokemon">
+                  <h3>{{ card.evolveFrom }} #{{ childPokemon.id }}</h3>
+                </div>
+              </div>
+              <div class="evolution-line"></div>
+              <div class="initial-pokemon">
+                <section :style="getBackgroundColor(initialPokemon.type)">
+                  <img :src="initialPokemon.image" :alt="initialPokemon.name" class="card-img" />
+                </section>
+                <div class="details-pokemon">
+                  <h3>{{ card.name }} #{{ initialPokemon.id }}</h3>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -100,6 +109,39 @@ export default {
     close() {
       this.$emit('close')
     },
+    async fetchinitialPokemon(pokemonName) {
+      try {
+        const response = await fetch(
+          `https://pokeapi.co/api/v2/pokemon/${pokemonName.toLowerCase()}`,
+        )
+        const pokemon = await response.json()
+        this.initialPokemon = {
+          id: pokemon.id,
+          name: pokemon.name,
+          image: pokemon.sprites.front_default || '',
+          type: pokemon.types[0].type.name || 'normal',
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données :', error)
+      }
+    },
+    async fetchEvolvePokemon(evolveFrom) {
+      try {
+        const response = await fetch(
+          `https://pokeapi.co/api/v2/pokemon/${evolveFrom.toLowerCase()}`,
+        )
+        const pokemon = await response.json()
+        this.childPokemon = {
+          id: pokemon.id,
+          name: pokemon.name,
+          image: pokemon.sprites.front_default || '',
+          type: pokemon.types[0].type.name || 'normal',
+        }
+        console.log(pokemon)
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données :', error)
+      }
+    },
     getBadgeTypeStyle(type) {
       const color = colors.type[type.toLowerCase()]
       return {
@@ -130,35 +172,13 @@ export default {
           'linear-gradient(90deg, rgba(255, 69, 69, 1) 0%, rgba(251, 163, 72, 1) 12%, rgba(242, 244, 81, 1) 23%, rgba(181, 255, 84, 1) 33%, rgba(118, 243, 186, 1) 46%, rgba(99, 184, 248, 1) 56%, rgba(153, 150, 249, 1) 70%, rgba(252, 169, 248, 1) 84%, rgba(255, 125, 152, 1) 93%, rgba(255, 69, 69, 1) 100%)',
       }
     },
-    async fetchinitialPokemon(pokemonName) {
-      try {
-        const response = await fetch(
-          `https://pokeapi.co/api/v2/pokemon/${pokemonName.toLowerCase()}`,
-        )
-        const pokemon = await response.json()
-        this.initialPokemon = {
-          id: pokemon.id,
-          name: pokemon.name,
-          image: pokemon.sprites.front_default || '',
-        }
-      } catch (error) {
-        console.error('Erreur lors de la récupération des données :', error)
-      }
-    },
-    async fetchEvolvePokemon(evolveFrom) {
-      try {
-        const response = await fetch(
-          `https://pokeapi.co/api/v2/pokemon/${evolveFrom.toLowerCase()}`,
-        )
-        const pokemon = await response.json()
-        this.childPokemon = {
-          id: pokemon.id,
-          name: pokemon.name,
-          image: pokemon.sprites.front_default || '',
-        }
-        console.log(pokemon)
-      } catch (error) {
-        console.error('Erreur lors de la récupération des données :', error)
+    getBackgroundColor(type) {
+      console.log('type', type)
+      const color = colors.type[type]
+      return {
+        borderRadius: '360px',
+        border: `3px solid ${color}`,
+        background: `radial-gradient(circle, ${color}, rgba(255, 255, 255, 0) 60%)`,
       }
     },
   },
@@ -282,16 +302,21 @@ export default {
 
 .evolution-pokemon {
   display: flex;
-  justify-content: space-around;
   align-items: center;
   padding: 1vh 0;
 }
-.child-pokemon-img,
-.pokemon-initial-img {
-  border-radius: 360px;
-  border: 3px solid #d2d1c1;
-  background: rgb(249, 210, 150);
-  background: radial-gradient(circle, #aaa67f, rgba(255, 255, 255, 0) 52%);
+
+.evolution-line {
+  width: 10vw;
+  height: 0;
+  border-bottom: 2px dashed #d2d1c1;
+  transform: translateY(-50%);
+  z-index: 0;
+}
+.details-pokemon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 @media (max-width: 768px) {
   .modal-body {
