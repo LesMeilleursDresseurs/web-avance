@@ -4,12 +4,7 @@
     <h1>{{ name }}</h1>
     <div class="gridContainer">
       <div class="grid">
-        <div
-          class="cardBox"
-          v-for="card in cards"
-          v-bind:key="card.id"
-          @click="console.log(card.id, card.image)"
-        >
+        <div class="cardBox" v-for="card in cards" v-bind:key="card.id" @click="() => null">
           <img
             v-if="card.image"
             :src="`${card.image}/low.webp`"
@@ -46,7 +41,7 @@ interface IState {
   timeout?: number
 }
 
-const itemPerPage = 15
+const itemPerPage = 20
 
 export default {
   components: { MenuTopBar },
@@ -70,13 +65,13 @@ export default {
       const res = await fetch(
         `https://api.tcgdex.net/v2/en/cards?name=${this.name}&category=Pokemon&pagination:page=${this.page}&pagination:itemsPerPage=${itemPerPage}`,
       )
-      const page = await res.json()
-      if (page.length === 0) {
+      const newCards = await res.json()
+      if (newCards.length === 0) {
         this.isLoading = false
         window.removeEventListener('scroll', () => {})
         return
       }
-      this.cards = [...this.cards, ...page]
+      this.cards = [...this.cards, ...newCards]
       this.page++
       setTimeout(() => {
         this.isLoading = false
@@ -92,7 +87,6 @@ export default {
         !this.isLoading
       ) {
         await this.fetchCards()
-        console.log('event')
       }
     })
   },
@@ -107,7 +101,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 2rem;
+  gap: 1rem;
 }
 
 .cardBox {
