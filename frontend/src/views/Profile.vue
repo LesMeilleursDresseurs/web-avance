@@ -3,16 +3,34 @@
     <MenuTopBar />
     <main>
       <div class="profile-details">
-        <img v-if="userConnected.picture !== undefined && userConnected.picture !== null && userConnected.picture !== ''"
-             class="picture"
-             :src="userConnected.picture"
-             alt="profil picture google account"/>
+        <img
+          v-if="
+            userConnected.picture !== undefined &&
+            userConnected.picture !== null &&
+            userConnected.picture !== ''
+          "
+          class="picture"
+          :src="userConnected.picture"
+          alt="profil picture google account"
+        />
         <p><strong>Email: </strong>{{ userConnected.email }}</p>
         <div class="first-last-names">
-          <p v-if="userConnected.firstname !== undefined && userConnected.firstname !== null && userConnected.firstname !== ''">
+          <p
+            v-if="
+              userConnected.firstname !== undefined &&
+              userConnected.firstname !== null &&
+              userConnected.firstname !== ''
+            "
+          >
             {{ userConnected.firstname }}
           </p>
-          <p v-if="userConnected.lastname !== undefined && userConnected.lastname !== null && userConnected.lastname !== ''">
+          <p
+            v-if="
+              userConnected.lastname !== undefined &&
+              userConnected.lastname !== null &&
+              userConnected.lastname !== ''
+            "
+          >
             {{ userConnected.lastname }}
           </p>
         </div>
@@ -20,13 +38,10 @@
           <p><strong>Total </strong>cards: {{ cardsCollection.length }}</p>
         </div>
       </div>
-      <div class="content">
-
-      </div>
+      <div class="content"></div>
     </main>
   </div>
 </template>
-
 
 <script lang="ts">
 import MenuTopBar from '@/components/MenuTopBar.vue'
@@ -41,13 +56,12 @@ export default {
     },
     cardsCollection: () => {
       return store.getters['pokedex/getCardsCollection']
-    }
+    },
   },
   mounted() {
     store.dispatch('pokedex/getCardsCollection', this.userConnected.id)
-  }
+  },
 }
-
 </script>
 
 <style scoped>
@@ -67,7 +81,7 @@ main {
   height: 100%;
   width: 100%;
   margin: 0 0;
-  padding:0 0;
+  padding: 0 0;
   display: flex;
 }
 

@@ -13,6 +13,6 @@ export default createStore({
   modules: {
     login,
     notification,
-    pokedex
+    pokedex,
   },
 })

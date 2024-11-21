@@ -29,7 +29,7 @@ const actions = {
       .post(`${API_URL}/login`, user)
       .then(async (response) => {
         await commit('setUserConnected', response.data)
-        localStorage.setItem('userConnected', JSON.stringify(response.data));
+        localStorage.setItem('userConnected', JSON.stringify(response.data))
         await router.push('/')
         await dispatch(
           'notification/newNotification',
@@ -58,10 +58,10 @@ const actions = {
   },
 
   async logOut({ commit }) {
-    await localStorage.removeItem('userConnected');
-    commit('setUserConnected', {});
-    router.push('/login');
-  }
+    await localStorage.removeItem('userConnected')
+    commit('setUserConnected', {})
+    router.push('/login')
+  },
 }
 
 const mutations = {

@@ -7,33 +7,51 @@
       <button class="nav-button" @click="goPokedexNational">Pokédex National</button>
       <button class="nav-button" @click="goJccPokemon">JCC Pokémon</button>
     </nav>
-    <button v-if="userConnected.id === undefined || userConnected.id === null"
-            class="login-button"
-            @click="goLogin">
+    <button
+      v-if="userConnected.id === undefined || userConnected.id === null"
+      class="login-button"
+      @click="goLogin"
+    >
       Signup / Login
     </button>
-    <div v-else class="logged" :class="{open: option}">
-      <img v-if="userConnected.picture !== undefined && userConnected.picture !== null && userConnected.picture !== ''"
-           class="picture"
-           :src="userConnected.picture"
-           alt="profil picture google account"/>
-      <p v-else-if="userConnected.firstname !== undefined && userConnected.firstname !== null && userConnected.firstname !== ''">
+    <div v-else class="logged" :class="{ open: option }">
+      <img
+        v-if="
+          userConnected.picture !== undefined &&
+          userConnected.picture !== null &&
+          userConnected.picture !== ''
+        "
+        class="picture"
+        :src="userConnected.picture"
+        alt="profil picture google account"
+      />
+      <p
+        v-else-if="
+          userConnected.firstname !== undefined &&
+          userConnected.firstname !== null &&
+          userConnected.firstname !== ''
+        "
+      >
         {{ userConnected.firstname }}
       </p>
-      <p v-else-if="userConnected.lastname !== undefined && userConnected.lastname !== null && userConnected.lastname !== ''">
+      <p
+        v-else-if="
+          userConnected.lastname !== undefined &&
+          userConnected.lastname !== null &&
+          userConnected.lastname !== ''
+        "
+      >
         {{ userConnected.lastname }}
       </p>
-      <img class="option"
-           @click="option = !option"
-           src="@/assets/img/option.png"
-           alt="image option" />
+      <img
+        class="option"
+        @click="option = !option"
+        src="@/assets/img/option.png"
+        alt="image option"
+      />
       <nav>
-        <button class="nav-button" @click="goProfile">
-          Profile
-        </button>
-        <button class="nav-button" @click="logout">
-          Logout
-        </button>
+        <button class="nav-button" @click="goProfile">Profile</button>
+        <button class="nav-button" @click="logout">Logout</button>
       </nav>
     </div>
   </header>
@@ -45,7 +63,9 @@ import store from '@/store'
 export default {
   name: 'MenuTopBar',
   computed: {
-    userConnected: () => { return store.getters['login/getUserConnected']}
+    userConnected: () => {
+      return store.getters['login/getUserConnected']
+    },
   },
   data() {
     return {
@@ -70,8 +90,8 @@ export default {
     },
     goProfile() {
       this.$router.push('/profile')
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -220,7 +240,6 @@ header {
   background-color: #9a0007;
 }
 
-
 .logged nav {
   width: 100%;
   height: 0;
@@ -239,7 +258,7 @@ header {
   height: 76px;
 }
 
-.logged.open nav button.nav-button{
+.logged.open nav button.nav-button {
   background: none;
   border: none;
   margin: 0 0;

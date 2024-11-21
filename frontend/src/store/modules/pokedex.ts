@@ -12,11 +12,10 @@ const getters = {
 }
 
 const actions = {
-  async addCard({ commit }, id) {
-
-  },
-  async getCardsCollection({commit, dispatch}, userId) {
-    axios.get(`${API_URL}/getCards?userId=${userId}`)
+  async addCard({ commit }, id) {},
+  async getCardsCollection({ commit, dispatch }, userId) {
+    axios
+      .get(`${API_URL}/getCards?userId=${userId}`)
       .then((response) => {
         console.log(response)
         commit('setCards', response.data.cards)
@@ -31,7 +30,7 @@ const actions = {
           { root: true },
         )
       })
-  }
+  },
 }
 
 const mutations = {
