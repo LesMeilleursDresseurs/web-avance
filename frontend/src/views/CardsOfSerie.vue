@@ -15,11 +15,9 @@
         </li>
       </ul>
     </aside>
-    <div v-if="isLoading" class="loading"><img src="@/assets/loader.gif" /></div>
+    <div v-if="isLoading" class="loading"><img src="@/assets/loader.gif" alt="loader" /></div>
     <div v-else-if="!isLoading && cards.length > 0" class="cards-grid">
-      <div v-for="card in cards" :key="card.id" class="card">
-        <img :src="card.image + '//low.png'" :alt="card.name" />
-      </div>
+      <PokemonCard v-for="card in cards" :card="card" :key="card.id" />
     </div>
     <div v-else class="no-cards">
       <p>We don't have cards for this set.</p>
@@ -30,14 +28,11 @@
 <script setup lang="ts">
 import { ref, onMounted, defineProps } from 'vue'
 import MenuTopBar from '@/components/MenuTopBar.vue'
+import PokemonCard, { type Card } from '@/components/Card.vue'
 
 type objectSetsAndCards = {
-  [setId: string]: Cards
+  [setId: string]: Card[]
 }
-type Cards = {
-  id: string
-  image: string
-}[]
 
 const props = defineProps({
   id: {
@@ -46,7 +41,7 @@ const props = defineProps({
 })
 const sets = ref<Array<string>>([])
 const serie = ref<Array<string>>([])
-const cards = ref<Cards>([])
+const cards = ref<Card[]>([])
 const activeSet = ref({})
 //const ownedCards = ref([])
 const seriesId = props.id
@@ -131,14 +126,6 @@ onMounted(() => {
   justify-content: space-evenly;
   gap: 1rem;
   padding: 1rem 25px;
-}
-
-.card {
-  max-width: 12vw;
-}
-
-.card img {
-  border-radius: 8px 8px;
 }
 
 .loading {
