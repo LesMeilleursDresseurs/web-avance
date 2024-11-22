@@ -4,7 +4,7 @@
 
   <!--Filtre-->
   <div class="filter-bar">
-    <!--Recherche textuelle par nom ou ID-->
+    <!--Recherche par nom ou ID-->
     <input
     type="text"
     v-model="recherchePokemonRequete"
@@ -15,18 +15,19 @@
 
     <!--Recherche par génération-->
     <div class="generation-filter">
-      <span>Generation : </span>
-      <button @click="selectAllGenerations">All</button>
-      <button @click="clearGenerations">None</button>
-      <label v-for="gen in generations" :key="gen.value">
-          <input
-            type="checkbox"
-            :value="gen.value"
-            v-model="selectedGenerations"
-            @change="filterAndSearch"
-          />
-        {{ gen.label }}
-      </label>
+      <span class="generation-label">Generation : </span>
+      <button class="filter-button all" @click="selectAllGenerations">All</button>
+      <button class="filter-button none" @click="clearGenerations">None</button>
+      <div class="generation-buttons">
+        <button
+          v-for="gen in generations"
+          :key="gen.value"
+          :class="['generation-button', { active: selectedGenerations.includes(gen.value) }]"
+          @click="toggleGeneration(gen.value)"
+        >
+          {{ getGenerationNumber(gen.value) }}
+        </button>
+      </div>
     </div>
   </div>
 
@@ -221,6 +222,20 @@ function loadMorePokemons() {
   visibleCount.value += 20;
 }
 
+function getGenerationNumber(num: number): string {
+  const numberMap = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"];
+  return numberMap[num - 1];
+}
+
+function toggleGeneration(gen: number) {
+  if(selectedGenerations.value.includes(gen)) {
+    selectedGenerations.value = selectedGenerations.value.filter((g) => g !== gen);
+  } else {
+    selectedGenerations.value.push(gen);
+  }
+  filterAndSearch();
+}
+
 onMounted(async () => {
   console.log('Chargement intial')
   fetchAllPokemons();
@@ -264,21 +279,78 @@ h1 {
 .filter-bar {
   display: flex;
   align-items: center;
-  justify-content: center;
   flex-direction: column;
-  padding: 0.5rem;
-  background: white;
-  border-radius: 5px;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
   width: 90%;
-  margin: auto;
+  margin: 0.5rem auto;
 }
 
 .search-input {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 0.25rem;
-  font-size: 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  background-color: #eaeef3;
+  color: #2c3e50;
+}
+
+.generation-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.generation-label {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #343a40;
+}
+
+.filter-button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.filter-button:hover {
+  background-color: #0056b3;
+}
+
+.generation-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.generation-button {
+  height: 50px;
+  border: none;
+  text-align: center;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #dc3545;
+  color: white;
+}
+
+.generation-button.active {
+  background-color: #28a745;
+}
+
+.generation-button:hover {
+  transform: scale(1.1);
 }
 
 header {
