@@ -19,11 +19,13 @@
         v-if="
           userConnected.picture !== undefined &&
           userConnected.picture !== null &&
-          userConnected.picture !== ''
+          userConnected.picture !== '' &&
+          this.imageLoaded
         "
         class="picture"
+        @load="handleImageLoad"
+        @error="handleImageError"
         :src="userConnected.picture"
-        alt="profil picture google account"
       />
       <p
         v-else-if="
@@ -70,10 +72,8 @@ export default {
   data() {
     return {
       option: false,
+      imageLoaded: true,
     }
-  },
-  mounted() {
-    console.log(this.userConnected.id)
   },
   methods: {
     goPokedexNational() {
@@ -90,6 +90,14 @@ export default {
     },
     goProfile() {
       this.$router.push('/profile')
+    },
+    handleImageLoad() {
+      console.log('Image loaded successfully.')
+      this.imageLoaded = true
+    },
+    handleImageError(event) {
+      console.error(event)
+      this.imageLoaded = false
     },
   },
 }

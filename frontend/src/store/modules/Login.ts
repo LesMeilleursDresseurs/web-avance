@@ -30,7 +30,6 @@ const actions = {
       .then(async (response) => {
         await commit('setUserConnected', response.data)
         localStorage.setItem('userConnected', JSON.stringify(response.data))
-        await router.push('/')
         await dispatch(
           'notification/newNotification',
           {
@@ -39,6 +38,7 @@ const actions = {
           },
           { root: true },
         )
+        await router.push('/')
       })
       .catch(async () => {
         await dispatch(
