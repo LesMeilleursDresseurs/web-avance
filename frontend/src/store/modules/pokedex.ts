@@ -2,7 +2,7 @@ import axios from 'axios'
 import { API_URL } from '@/store'
 
 const state = {
-  cardsCollection: [],
+  cardsCollection: JSON.parse(localStorage.getItem('cardsCollection')) || [],
 }
 
 const getters = {
@@ -12,12 +12,62 @@ const getters = {
 }
 
 const actions = {
-  async addCard({ commit }, id) {},
-  async getCardsCollection({ commit, dispatch }, userId) {
+  async addCard({ commit, rootGetters, dispatch }, cardId: string) {
+    const userConnected = rootGetters['login/getUserConnected']
+    axios
+      .post(`${API_URL}/addCard?cardId=${cardId}&userId=${userConnected.id}`)
+      .then((response) => {
+        commit('setAddCard', cardId)
+        dispatch(
+          'notification/newNotification',
+          {
+            message: cardId + ' card successfully added',
+            good: true,
+          },
+          { root: true },
+        )
+      })
+      .catch(async (error) => {
+        await dispatch(
+          'notification/newNotification',
+          {
+            message: 'Error during the adding of the card' + error,
+            good: false,
+          },
+          { root: true },
+        )
+      })
+  },
+  async removeCard({ commit, rootGetters, dispatch }, cardId: string) {
+    const userConnected = rootGetters['login/getUserConnected']
+    axios
+      .delete(`${API_URL}/deleteCard?cardId=${cardId}&userId=${userConnected.id}`)
+      .then((response) => {
+        commit('removeCard', cardId)
+        dispatch(
+          'notification/newNotification',
+          {
+            message: cardId + ' card successfully deleted',
+            good: false,
+          },
+          { root: true },
+        )
+      })
+      .catch(async (error) => {
+        await dispatch(
+          'notification/newNotification',
+          {
+            message: 'Error during the removing of the card' + error,
+            good: false,
+          },
+          { root: true },
+        )
+      })
+  },
+  async loadCardsCollection({ commit, dispatch }, userId) {
     axios
       .get(`${API_URL}/getCards?userId=${userId}`)
       .then((response) => {
-        console.log(response)
         commit('setCards', response.data.cards)
       })
       .catch(async (error) => {
@@ -36,12 +86,15 @@ const actions = {
 const mutations = {
   setCards(state, cards) {
     state.cardsCollection = cards
+    localStorage.setItem('cardsCollection', JSON.stringify(state.cardsCollection))
   },
-  setAddCard(state, id) {
+  setAddCard(state, id: String | null): void {
     state.cardsCollection.push(id)
+    localStorage.setItem('cardsCollection', JSON.stringify(state.cardsCollection))
   },
-  removeCard(state, id) {
+  removeCard(state, id: String | null): void {
     state.cardsCollection = state.cardsCollection.filter((card) => card !== id)
+    localStorage.setItem('cardsCollection', JSON.stringify(state.cardsCollection))
   },
 }
 
