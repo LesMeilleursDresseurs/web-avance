@@ -30,6 +30,10 @@ const actions = {
       .then(async (response) => {
         await commit('setUserConnected', response.data)
         localStorage.setItem('userConnected', JSON.stringify(response.data))
+
+        //loading the connected user's card collection
+        await dispatch('pokedex/loadCardsCollection', response.data.id, { root: true })
+
         await dispatch(
           'notification/newNotification',
           {
@@ -59,7 +63,9 @@ const actions = {
 
   async logOut({ commit }) {
     await localStorage.removeItem('userConnected')
+    await localStorage.removeItem('cardsCollection')
     commit('setUserConnected', {})
+    commit('pokedex/setCards', [])
     router.push('/login')
   },
 }
