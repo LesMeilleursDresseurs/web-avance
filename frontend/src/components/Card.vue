@@ -52,6 +52,14 @@ export default {
       default: false,
     },
   },
+  async mounted() {
+    if (this.isAuthenticated) {
+      await store.dispatch(
+        'pokedex/loadCardsCollection',
+        store.getters['login/getUserConnected'].id,
+      )
+    }
+  },
   computed: {
     cardImage(): string {
       return this.hq ? `${this.card.image}/high.webp` : `${this.card.image}/low.webp`

@@ -2,7 +2,7 @@ import axios from 'axios'
 import { API_URL } from '@/store'
 
 const state = {
-  cardsCollection: JSON.parse(localStorage.getItem('cardsCollection')) || [],
+  cardsCollection: [],
 }
 
 const getters = {
@@ -86,15 +86,12 @@ const actions = {
 const mutations = {
   setCards(state, cards) {
     state.cardsCollection = cards
-    localStorage.setItem('cardsCollection', JSON.stringify(state.cardsCollection))
   },
   setAddCard(state, id: String | null): void {
     state.cardsCollection.push(id)
-    localStorage.setItem('cardsCollection', JSON.stringify(state.cardsCollection))
   },
   removeCard(state, id: String | null): void {
     state.cardsCollection = state.cardsCollection.filter((card) => card !== id)
-    localStorage.setItem('cardsCollection', JSON.stringify(state.cardsCollection))
   },
 }
 
