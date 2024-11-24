@@ -34,7 +34,6 @@ const actions = {
         //loading the connected user's card collection
         await dispatch('pokedex/loadCardsCollection', response.data.id, { root: true })
 
-        await router.push('/')
         await dispatch(
           'notification/newNotification',
           {
@@ -43,6 +42,7 @@ const actions = {
           },
           { root: true },
         )
+        await router.push('/')
       })
       .catch(async () => {
         await dispatch(
