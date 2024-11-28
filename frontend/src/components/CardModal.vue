@@ -7,7 +7,7 @@
 
       <section class="modal-body">
         <div class="left-section">
-          <img :src="card.image + `/high.png`" alt="Card Image" />
+          <CardAnimation3d :imgSrc="card.image + `/high.png`" />
         </div>
         <div class="right-section">
           <h1>{{ card.name }} #{{ initialPokemon.id }}</h1>
@@ -51,7 +51,7 @@
             <div class="evolution-pokemon">
               <div class="evolve-from">
                 <section :style="getBackgroundColor(childPokemon.type)">
-                  <img :src="childPokemon.image" :alt="childPokemon.name" class="card-img" />
+                  <img :src="childPokemon.image" :alt="childPokemon.name" class="pokemon-img" />
                 </section>
                 <div class="details-pokemon">
                   <h3>{{ card.evolveFrom }} #{{ childPokemon.id }}</h3>
@@ -60,7 +60,7 @@
               <div class="evolution-line"></div>
               <div class="initial-pokemon">
                 <section :style="getBackgroundColor(initialPokemon.type)">
-                  <img :src="initialPokemon.image" :alt="initialPokemon.name" class="card-img" />
+                  <img :src="initialPokemon.image" :alt="initialPokemon.name" class="pokemon-img" />
                 </section>
                 <div class="details-pokemon">
                   <h3>{{ card.name }} #{{ initialPokemon.id }}</h3>
@@ -82,6 +82,7 @@
 <script>
 import { colors } from '@/constants/constants'
 import Accordion from './Accordion.vue'
+import CardAnimation3d from '@/components/CardAnimation3d.vue'
 export default {
   data() {
     return {
@@ -94,6 +95,7 @@ export default {
     card: Object,
   },
   components: {
+    CardAnimation3d,
     Accordion,
   },
   watch: {
@@ -261,11 +263,6 @@ export default {
   padding: 0 1vw;
 }
 
-.left-section img {
-  max-height: 100%;
-  height: 60vh;
-}
-
 .right-section {
   display: flex;
   flex-direction: column;
@@ -337,6 +334,15 @@ export default {
   justify-content: center;
   align-items: center;
 }
+
+.pokemon-img {
+  transition: 1s cubic-bezier(0.25, 0.45, 0.45, 0.95);
+}
+
+.pokemon-img:hover {
+  transform: scale(1.4);
+}
+
 @media (max-width: 768px) {
   .modal-body {
     flex-direction: column;
@@ -358,11 +364,6 @@ export default {
 
   .right-section {
     margin-top: 20px;
-  }
-
-  .left-section img {
-    max-height: 100%;
-    height: 60vh;
   }
 }
 </style>
