@@ -4,29 +4,31 @@
 
   <!--Filtre-->
   <div class="filter-bar">
+    <div class="search-and-generations">
     <!--Recherche par nom ou ID-->
-    <input
-    type="text"
-    v-model="recherchePokemonRequete"
-    @input="filterAndSearch"
-    placeholder="Search Pokémon by name or ID..."
-    class="search-input"
-    />
+      <input
+        type="text"
+        v-model="recherchePokemonRequete"
+        @input="filterAndSearch"
+        placeholder="Search Pokémon by name or ID..."
+        class="search-input"
+      />
 
-    <!--Recherche par génération-->
-    <div class="generation-filter">
-      <span class="generation-label">Generation : </span>
-      <button class="filter-button all" @click="selectAllGenerations">All</button>
-      <button class="filter-button none" @click="clearGenerations">None</button>
-      <div class="generation-buttons">
-        <button
-          v-for="gen in generations"
-          :key="gen.value"
-          :class="['generation-button', { active: selectedGenerations.includes(gen.value) }]"
-          @click="toggleGeneration(gen.value)"
-        >
-          {{ getGenerationNumber(gen.value) }}
-        </button>
+      <!--Recherche par génération-->
+      <div class="generation-filter">
+        <span class="generation-label">Generation : </span>
+        <button class="filter-button all" @click="selectAllGenerations">All</button>
+        <button class="filter-button none" @click="clearGenerations">None</button>
+        <div class="generation-buttons">
+          <button
+            v-for="gen in generations"
+            :key="gen.value"
+            :class="['generation-button', { active: selectedGenerations.includes(gen.value) }]"
+            @click="toggleGeneration(gen.value)"
+          >
+            {{ getGenerationNumber(gen.value) }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -199,7 +201,7 @@ function filterBySearch(pokemons: Pokemon[]): Pokemon[] {
 
 // Combinaison des filtres
 function filterAndSearch() {
-  let filtered = filterByGeneration(allPokemons.value);
+  let filtered = selectedGenerations.value.length ? filterByGeneration(allPokemons.value) : [];
   filtered = filterBySearch(filtered);
   displayedPokemons.value = filtered;
 }
@@ -211,7 +213,7 @@ function selectAllGenerations() {
 
 function clearGenerations() {
   selectedGenerations.value = [];
-  displayedPokemons.value = [];
+  filterAndSearch();
 }
 
 function getDisplayPokemons(): Pokemon[] {
@@ -279,30 +281,36 @@ h1 {
 .filter-bar {
   display: flex;
   align-items: center;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1rem;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
   background: #f8f9fa;
   border-radius: 8px;
   width: 90%;
-  margin: 0.5rem auto;
+  margin: 1rem auto;
+}
+
+.search-and-generations{
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
 }
 
 .search-input {
-  width: 100%;
-  padding: 0.5rem;
+  flex: 1;
+  padding: 0.4rem;
   border: 1px solid #ced4da;
   border-radius: 8px;
   font-size: 0.8rem;
   background-color: #eaeef3;
   color: #2c3e50;
+  margin-bottom: 0;
 }
 
 .generation-filter {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
 .generation-label {
@@ -312,7 +320,7 @@ h1 {
 }
 
 .filter-button {
-  padding: 0.5rem 1rem;
+  padding: 0.3rem 0.8rem;
   border: none;
   border-radius: 20px;
   font-size: 0.8rem;
@@ -329,17 +337,19 @@ h1 {
 
 .generation-buttons {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
 .generation-button {
-  height: 50px;
+  padding: 0.3rem 0.6rem;
+  width: 2.5rem;
   border: none;
-  text-align: center;
-  border-radius: 20px;
+  border-radius: 500px;
   font-size: 0.8rem;
   font-weight: bold;
   cursor: pointer;
+  text-align: center;
+  line-height: 35px;
   transition: all 0.3s ease;
   background-color: #dc3545;
   color: white;
@@ -362,7 +372,7 @@ header {
   flex-wrap: wrap;
   justify-content: center;
   gap: 2rem;
-  margin: 1rem 3vw;
+  margin: 2rem 3vw;
   padding: 0 1vw;
 }
 
