@@ -27,7 +27,7 @@ server.get(
     }
 
     return reply.status(200).send({ toto: `Hello ${id}${fun ? ` ${fun}` : ''}` });
-  },
+  }
 );
 
 server.post(
@@ -57,5 +57,5 @@ server.post(
     });
 
     return reply.status(200).send({ toto: `Hello ${id}${fun ? ` ${fun}` : ''}` });
-  },
+  }
 );

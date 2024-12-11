@@ -41,7 +41,7 @@ server.get(
     }
     const cardsIds = cards.map((card) => card.idCard);
     return response.status(200).send({ message: `Cards found`, cards: cardsIds });
-  },
+  }
 );
 
 server.post(
@@ -75,7 +75,7 @@ server.post(
     });
 
     return response.status(200).send({ message: `Card added to collection` });
-  },
+  }
 );
 
 server.delete(
@@ -111,5 +111,5 @@ server.delete(
     });
 
     return response.status(200).send({ message: `Card removed from collection` });
-  },
+  }
 );
