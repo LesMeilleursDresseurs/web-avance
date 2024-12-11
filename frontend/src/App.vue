@@ -3,7 +3,6 @@
   <notification />
 </template>
 
-
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import notification from '@/components/Notification.vue'
@@ -16,4 +15,3 @@ html {
   padding: 0 0;
 }
 </style>
-

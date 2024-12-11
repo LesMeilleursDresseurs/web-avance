@@ -49,7 +49,7 @@ export default {
     async fetchCards() {
       this.isLoading = true
       const res = await fetch(
-        `https://api.tcgdex.net/v2/en/cards?name=${this.name}&category=Pokemon&pagination:page=${this.page}&pagination:itemsPerPage=${itemPerPage}`,
+        `https://api.tcgdex.net/v2/en/cards?name=${this.name}&category=Pokemon&pagination:page=${this.page}&pagination:itemsPerPage=${itemPerPage}`
       )
       const newCards = await res.json()
       if (newCards.length === 0) {

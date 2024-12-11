@@ -56,7 +56,7 @@ export default {
     if (this.isAuthenticated) {
       await store.dispatch(
         'pokedex/loadCardsCollection',
-        store.getters['login/getUserConnected'].id,
+        store.getters['login/getUserConnected'].id
       )
     }
   },

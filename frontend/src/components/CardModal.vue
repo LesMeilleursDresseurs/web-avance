@@ -120,7 +120,7 @@ export default {
     async fetchInitialPokemon(pokemonName) {
       try {
         const response = await fetch(
-          `https://pokeapi.co/api/v2/pokemon/${pokemonName.toLowerCase()}`,
+          `https://pokeapi.co/api/v2/pokemon/${pokemonName.toLowerCase()}`
         )
         const pokemon = await response.json()
         this.initialPokemon = {
@@ -136,7 +136,7 @@ export default {
     async fetchEvolvePokemon(evolveFrom) {
       try {
         const response = await fetch(
-          `https://pokeapi.co/api/v2/pokemon/${evolveFrom.toLowerCase()}`,
+          `https://pokeapi.co/api/v2/pokemon/${evolveFrom.toLowerCase()}`
         )
         const pokemon = await response.json()
         this.childPokemon = {
@@ -153,7 +153,7 @@ export default {
     async fetchOthersCard(name) {
       try {
         const response = await fetch(
-          `https://api.tcgdex.net/v2/en/cards?name=${name}&category=Pokemon`,
+          `https://api.tcgdex.net/v2/en/cards?name=${name}&category=Pokemon`
         )
         const data = await response.json()
         console.log(data)
@@ -214,7 +214,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin:;
+  margin: ;
 }
 
 .modal {

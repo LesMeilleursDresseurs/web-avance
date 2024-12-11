@@ -42,7 +42,7 @@ async function fetchPokemons() {
         name: pokemonData.name,
         image: pokemonData.sprites.front_default || '',
       }
-    }),
+    })
   )
   pokemons.value = [...pokemons.value, ...pokemonDetails]
   offset += limit

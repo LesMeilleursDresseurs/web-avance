@@ -40,7 +40,7 @@ const actions = {
             message: 'Connection successfull',
             good: true,
           },
-          { root: true },
+          { root: true }
         )
         await router.push('/')
       })
@@ -51,7 +51,7 @@ const actions = {
             message: 'Error of connection',
             good: false,
           },
-          { root: true },
+          { root: true }
         )
       })
       .finally(async () => {

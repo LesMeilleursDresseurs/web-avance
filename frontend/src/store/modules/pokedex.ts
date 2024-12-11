@@ -24,7 +24,7 @@ const actions = {
             message: cardId + ' card successfully added',
             good: true,
           },
-          { root: true },
+          { root: true }
         )
       })
       .catch(async (error) => {
@@ -34,7 +34,7 @@ const actions = {
             message: 'Error during the adding of the card' + error,
             good: false,
           },
-          { root: true },
+          { root: true }
         )
       })
   },
@@ -50,7 +50,7 @@ const actions = {
             message: cardId + ' card successfully deleted',
             good: false,
           },
-          { root: true },
+          { root: true }
         )
       })
       .catch(async (error) => {
@@ -60,7 +60,7 @@ const actions = {
             message: 'Error during the removing of the card' + error,
             good: false,
           },
-          { root: true },
+          { root: true }
         )
       })
   },
@@ -77,7 +77,7 @@ const actions = {
             message: 'Error during the loading of the pokedex' + error,
             good: false,
           },
-          { root: true },
+          { root: true }
         )
       })
   },
