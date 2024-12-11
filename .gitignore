@@ -1,3 +1,10 @@
 .idea
 .vscode
 .node_modules
+.DS_Store
+backend/prisma/dev.db
+backend/.env
+frontend/.env
+backend/dist
+frontend/node_modules
+backend/node_modules
