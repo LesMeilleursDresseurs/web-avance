@@ -4,16 +4,18 @@
     <h1>{{ name }}</h1>
     <div class="gridContainer">
       <div class="grid">
-        <PokemonCard :card="card" v-for="card in cards" :key="card.id" />
+        <PokemonCard :card="card" v-for="card in cards" :key="card.id" @click="openModal" />
       </div>
     </div>
     <div v-if="isLoading" class="loading"><img src="@/assets/loader.gif" alt="loader" /></div>
   </main>
+  <Modal v-if="selectedCard" :card="selectedCard" @close="closeModal" />
 </template>
 
 <script lang="ts">
 import MenuTopBar from '@/components/MenuTopBar.vue'
 import PokemonCard, { type Card } from '@/components/Card.vue'
+import Modal from '@/components/CardModal.vue'
 
 type CardBrief = {
   localId: string
@@ -25,18 +27,20 @@ interface IState {
   page: number
   hover: string
   timeout?: number
+  selectedCard: Card | null
 }
 
 const itemPerPage = 20
 
 export default {
-  components: { PokemonCard, MenuTopBar },
+  components: { Modal, PokemonCard, MenuTopBar },
   data(): IState {
     return {
       cards: [],
       isLoading: false,
       page: 1,
       hover: '',
+      selectedCard: null,
     }
   },
   props: {
@@ -46,10 +50,16 @@ export default {
     },
   },
   methods: {
+    openModal(card: Card) {
+      this.selectedCard = card
+    },
+    closeModal() {
+      this.selectedCard = null
+    },
     async fetchCards() {
       this.isLoading = true
       const res = await fetch(
-        `https://api.tcgdex.net/v2/en/cards?name=${this.name}&category=Pokemon&pagination:page=${this.page}&pagination:itemsPerPage=${itemPerPage}`
+        `https://api.tcgdex.net/v2/en/cards?name=${this.name}&category=Pokemon&pagination:page=${this.page}&pagination:itemsPerPage=${itemPerPage}`,
       )
       const newCards = await res.json()
       if (newCards.length === 0) {
