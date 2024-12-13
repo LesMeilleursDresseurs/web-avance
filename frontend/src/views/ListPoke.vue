@@ -31,6 +31,21 @@
         </div>
       </div>
     </div>
+
+    <!-- Recherche par type -->
+    <div class="type-filter">
+      <span class="type-label">Type :</span>
+      <div class="type-buttons">
+        <button
+          v-for="type in types"
+          :key="type.id"
+          :class="['type-button', { active: selectedTypes.includes(type.id) }]"
+          @click="toggleType(type.id)"
+        >
+          <img :src="type.icon" :alt="type.name" />
+        </button>
+      </div>
+    </div>
   </div>
 
   <div class="grid">
@@ -83,6 +98,11 @@ const generations = ref([
 ]);
 const selectedGenerations = ref<number[]>(generations.value.map((gen) => gen.value));
 const visibleCount = ref(20) // Nombre de Pokémon visible au chargement de la page
+const types = ref([
+  { id: "normal", name: 'Normal', icon: '/img/icon/Icône_Type_Normal_HOME.png' },
+  { id: "fire", name: 'Fire', icon: '/img/icon/Icône_Type_Feu_HOME.png' }
+]);
+const selectedTypes = ref<string[]>([]);
 
 // Chargement des Pokémon par bloc de 20
 /*async function fetchPokemons() {
@@ -119,6 +139,7 @@ async function fetchAllPokemons() {
           id: pokemonData.id,
           name: pokemonData.name,
           image: pokemonData.sprites.front_default || "",
+          types: pokemonData.types.map((type) => type.type.name),
         };
       })
     );
@@ -203,6 +224,7 @@ function filterBySearch(pokemons: Pokemon[]): Pokemon[] {
 function filterAndSearch() {
   let filtered = selectedGenerations.value.length ? filterByGeneration(allPokemons.value) : [];
   filtered = filterBySearch(filtered);
+  filtered = filterByType(filtered);
   displayedPokemons.value = filtered;
 }
 
@@ -236,6 +258,25 @@ function toggleGeneration(gen: number) {
     selectedGenerations.value.push(gen);
   }
   filterAndSearch();
+}
+
+function toggleType(typeId: number) {
+  if (selectedTypes.value.includes(typeId)) {
+    selectedTypes.value = selectedTypes.value.filter((id) => id !== typeId);
+  } else {
+    selectedTypes.value.push(typeId);
+  }
+  filterAndSearch();
+}
+
+function filterByType(pokemons: Pokemon[]): Pokemon[] {
+  if (selectedTypes.value.length === 0) {
+    return pokemons;
+  }
+
+  return pokemons.filter((pokemon) =>
+    pokemon.types.some((type) => selectedTypes.value.includes(type))
+  );
 }
 
 onMounted(async () => {
@@ -280,8 +321,8 @@ h1 {
 
 .filter-bar {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 1rem;
   padding: 0.5rem 1rem;
   background: #f8f9fa;
   border-radius: 8px;
@@ -360,6 +401,54 @@ h1 {
 }
 
 .generation-button:hover {
+  transform: scale(1.1);
+}
+
+.type-filter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.type-label {
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #343a40;
+}
+
+.type-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.type-button {
+  width: 100px;
+  height: 100px;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.type-button img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.type-button.active {
+  border-color: #28a745;
+  background-color: #28a745;
+}
+
+.type-button:hover {
   transform: scale(1.1);
 }
 
