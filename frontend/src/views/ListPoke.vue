@@ -35,6 +35,8 @@
     <!-- Recherche par type -->
     <div class="type-filter">
       <span class="type-label">Type :</span>
+      <button class="filter-button all" @click="selectAllTypes">All</button>
+      <button class="filter-button none" @click="clearTypes">None</button>
       <div class="type-buttons">
         <button
           v-for="type in types"
@@ -99,31 +101,27 @@ const generations = ref([
 const selectedGenerations = ref<number[]>(generations.value.map((gen) => gen.value));
 const visibleCount = ref(20) // Nombre de Pokémon visible au chargement de la page
 const types = ref([
-  { id: "normal", name: 'Normal', icon: '/img/icon/Icône_Type_Normal_HOME.png' },
-  { id: "fire", name: 'Fire', icon: '/img/icon/Icône_Type_Feu_HOME.png' }
-]);
-const selectedTypes = ref<string[]>([]);
+  { id: "normal", name: 'Normal', icon: 'src/assets/img/icon/Icône_Type_Normal_HOME.png' },
+  { id: "grass", name: 'Grass', icon: 'src/assets/img/icon/Icône_Type_Plante_HOME.png' },
+  { id: "fire", name: 'Fire', icon: 'src/assets/img/icon/Icône_Type_Feu_HOME.png' },
+  { id: "water", name: 'Water', icon: 'src/assets/img/icon/Icône_Type_Eau_HOME.png' },
+  { id: "electric", name: 'Electric', icon: 'src/assets/img/icon/Icône_Type_Électrik_HOME.png' },
+  { id: "flying", name: 'Flying', icon: 'src/assets/img/icon/Icône_Type_Vol_HOME.png' },
+  { id: "bug", name: 'Bug', icon: 'src/assets/img/icon/Icône_Type_Insecte_HOME.png' },
+  { id: "rock", name: 'Rock', icon: 'src/assets/img/icon/Icône_Type_Roche_HOME.png' },
+  { id: "ground", name: 'Ground', icon: 'src/assets/img/icon/Icône_Type_Sol_HOME.png' },
+  { id: "psychic", name: 'Psychic', icon: 'src/assets/img/icon/Icône_Type_Psy_HOME.png' },
+  { id: "poison", name: 'Poison', icon: 'src/assets/img/icon/Icône_Type_Poison_HOME.png' },
+  { id: "ghost", name: 'Ghost', icon: 'src/assets/img/icon/Icône_Type_Spectre_HOME.png' },
+  { id: "dark", name: 'Dark', icon: 'src/assets/img/icon/Icône_Type_Ténèbres_HOME.png' },
+  { id: "steel", name: 'Steel', icon: 'src/assets/img/icon/Icône_Type_Acier_HOME.png' },
+  { id: "fighting", name: 'Fighting', icon: 'src/assets/img/icon/Icône_Type_Combat_HOME.png' },
+  { id: "ice", name: 'Ice', icon: 'src/assets/img/icon/Icône_Type_Glace_HOME.png' },
+  { id: "dragon", name: 'dragon', icon: 'src/assets/img/icon/Icône_Type_Dragon_HOME.png' },
+  { id: "fairy", name: 'Fairy', icon: 'src/assets/img/icon/Icône_Type_Fée_HOME.png' },
 
-// Chargement des Pokémon par bloc de 20
-/*async function fetchPokemons() {
-  const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
-  const data = await response.json()
-  const pokemonDetails = await Promise.all(
-    data.results.map(async (pokemon) => {
-      const pokemonData = await fetch(pokemon.url).then((res) => res.json())
-      return {
-        id: pokemonData.id,
-        name: pokemonData.name,
-        image: pokemonData.sprites.front_default || '',
-      }
-    }),
-  )
-  pokemons.value = [...pokemons.value, ...pokemonDetails]
-  offset += limit
-  setTimeout(() => {
-    isLoading.value = false
-  }, 4000)
-}*/
+]);
+const selectedTypes = ref<string[]>(["normal", "grass", "fire", "water", "electric", "flying", "bug", "rock", "ground", "psychic", "poison", "ghost", "dark", "steel", "fighting", "ice", "dragon", "fairy"]);
 
 async function fetchAllPokemons() {
   try {
@@ -152,37 +150,6 @@ async function fetchAllPokemons() {
     isLoading.value = false;
   }
 }
-
-// Filtre champ de recherche de Pokémon par nom exact ou ID
-/*async function recherchePokemon() {
-  const requete = recherchePokemonRequete.value.trim().toLowerCase()
-
-  // Requete vide
-  if(!requete) {
-    recherchePokemonResult.value = [] // Si le champs de recherche est vide
-    return
-  }
-
-  isLoading.value = true
-  try {
-    const reponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${requete}`)
-    if(!reponse.ok) throw new Error('Pokemon not found')
-
-    const pokemonData = await reponse.json()
-    recherchePokemonResult.value = [
-      {
-        id: pokemonData.id,
-        name: pokemonData.name,
-        image: pokemonData.sprites.front_default || '',
-      },
-    ];
-  } catch (err) {
-    console.error("Erreur lors de la recherche : ", err)
-    recherchePokemonResult.value = []
-  } finally {
-    isLoading.value = false
-  }
-}*/
 
 // Filtrage par génération
 function filterByGeneration(pokemons: Pokemon[]): Pokemon[] {
@@ -222,9 +189,15 @@ function filterBySearch(pokemons: Pokemon[]): Pokemon[] {
 
 // Combinaison des filtres
 function filterAndSearch() {
-  let filtered = selectedGenerations.value.length ? filterByGeneration(allPokemons.value) : [];
-  filtered = filterBySearch(filtered);
+  if (selectedGenerations.value.length === 0 || selectedTypes.value.length === 0) {
+    displayedPokemons.value = [];
+    return;
+  }
+
+  let filtered = filterByGeneration(allPokemons.value);
   filtered = filterByType(filtered);
+  filtered = filterBySearch(filtered);
+
   displayedPokemons.value = filtered;
 }
 
@@ -235,6 +208,16 @@ function selectAllGenerations() {
 
 function clearGenerations() {
   selectedGenerations.value = [];
+  filterAndSearch();
+}
+
+function selectAllTypes() {
+  selectedTypes.value = types.value.map((type) => type.id);
+  filterAndSearch();
+}
+
+function clearTypes() {
+  selectedTypes.value = [];
   filterAndSearch();
 }
 
@@ -260,7 +243,7 @@ function toggleGeneration(gen: number) {
   filterAndSearch();
 }
 
-function toggleType(typeId: number) {
+function toggleType(typeId: string) {
   if (selectedTypes.value.includes(typeId)) {
     selectedTypes.value = selectedTypes.value.filter((id) => id !== typeId);
   } else {
@@ -293,12 +276,8 @@ onMounted(async () => {
   });
 });
 
-// onUnmounted(() => {
-  // window.removeEventListener('scroll', () => {})
-// })
-
 function viewPokemonDetails(id) {
-  console.log(`Navigate to Pokémon details using the ID : ${id}`)
+  // console.log(Navigate to Pokémon details using the ID : ${id})
   router.push({ name: 'PokeDetail', params: { id } })
 }
 </script>
@@ -342,10 +321,11 @@ h1 {
   padding: 0.4rem;
   border: 1px solid #ced4da;
   border-radius: 8px;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   background-color: #eaeef3;
   color: #2c3e50;
   margin-bottom: 0;
+  height: 50px;
 }
 
 .generation-filter {
@@ -355,7 +335,7 @@ h1 {
 }
 
 .generation-label {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: bold;
   color: #343a40;
 }
@@ -363,8 +343,9 @@ h1 {
 .filter-button {
   padding: 0.3rem 0.8rem;
   border: none;
-  border-radius: 20px;
-  font-size: 0.8rem;
+  border-radius: 50px;
+  line-height: 20px;
+  font-size: 0.7rem;
   font-weight: bold;
   cursor: pointer;
   background-color: #007bff;
@@ -383,14 +364,14 @@ h1 {
 
 .generation-button {
   padding: 0.3rem 0.6rem;
-  width: 2.5rem;
+  width: 50px;
   border: none;
-  border-radius: 500px;
-  font-size: 0.8rem;
+  border-radius: 50px;
+  font-size: 0.7rem;
   font-weight: bold;
   cursor: pointer;
   text-align: center;
-  line-height: 35px;
+  line-height: 20px;
   transition: all 0.3s ease;
   background-color: #dc3545;
   color: white;
@@ -413,7 +394,7 @@ h1 {
 }
 
 .type-label {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: bold;
   color: #343a40;
 }
@@ -425,27 +406,29 @@ h1 {
 }
 
 .type-button {
-  width: 100px;
-  height: 100px;
-  border: 2px solid #ccc;
+  width: 40px;
+  height: 40px;
+  border: none;
   border-radius: 50%;
-  background-color: white;
+  background-color: #f8f9fa;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
+  filter: opacity(0.5);
+  overflow: hidden;
+  padding: 0;
 }
 
 .type-button img {
-  width: 32px;
-  height: 32px;
+  width: 75%;
+  height: 75%;
   object-fit: contain;
 }
 
 .type-button.active {
-  border-color: #28a745;
-  background-color: #28a745;
+  filter: none;
 }
 
 .type-button:hover {
