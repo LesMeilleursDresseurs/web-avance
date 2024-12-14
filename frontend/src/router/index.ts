@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import store from '../store' // Import your Vuex store
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,30 +7,39 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView,
+      component: () => import('../views/ListPoke.vue'),
     },
     {
       path: '/about',
       name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue'),
     },
     {
       path: '/series',
+      name: 'Series',
       component: () => import('../views/ListSeriesView.vue'),
     },
     {
-      path: '/poke',
-      name: 'poke',
-      component: () => import('../views/ListPoke.vue'),
+      path: '/login',
+      name: 'LoginPage',
+      component: () => import('../views/Login.vue'),
     },
     {
-      path: '/poke/:id',
+      path: '/poke/:name',
       name: 'PokeDetail',
       component: () => import('../views/PokeDetail.vue'),
-      props: (route) => ({ id: Number(route.params.id) }),
+      props: (route) => ({ name: String(route.params.name) }),
+    },
+    {
+      path: '/series/:id',
+      name: 'CardsOfSerie',
+      component: () => import('../views/CardsOfSerie.vue'),
+      props: (route) => ({ id: String(route.params.id) }),
+    },
+    {
+      path: '/Profile',
+      name: 'ProfilePage',
+      component: () => import('../views/Profile.vue'),
     },
   ],
 })

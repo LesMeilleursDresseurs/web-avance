@@ -1,12 +1,16 @@
 import { configurePlugins, server } from './providers/server';
 
-const { SERVER_PORT = 3000, SERVER_HOST = 'localhost' } = process.env;
+const { SERVER_PORT = 3000, SERVER_HOST = '0.0.0.0' } = process.env;
 
 const main = async () => {
   try {
     await configurePlugins();
 
-    await Promise.all([await import('./routes/example')]);
+    await Promise.all([
+      await import('./routes/example'),
+      await import('./routes/login'),
+      await import('./routes/cardCollection'),
+    ]);
 
     await server.listen({
       port: Number(SERVER_PORT),
