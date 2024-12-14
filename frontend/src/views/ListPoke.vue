@@ -5,7 +5,7 @@
   <!--Filtre-->
   <div class="filter-bar">
     <div class="search-and-generations">
-    <!--Recherche par nom ou ID-->
+      <!--Recherche par nom ou ID-->
       <input
         type="text"
         v-model="recherchePokemonRequete"
@@ -70,9 +70,9 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, ref} from 'vue';
-import MenuTopBar from '@/components/MenuTopBar.vue';
-import { useRouter } from 'vue-router';
+import { onMounted, ref } from 'vue'
+import MenuTopBar from '@/components/MenuTopBar.vue'
+import { useRouter } from 'vue-router'
 
 // Information récupérées d'un Pokémon
 interface Pokemon {
@@ -82,83 +82,101 @@ interface Pokemon {
 }
 
 // Variables
-const router = useRouter();
-const allPokemons = ref<Pokemon[]>([]); // Tous les Pokémons
-const displayedPokemons = ref<Pokemon[]>([]); // Pokémon affichés après filtres éventuels
-const isLoading = ref(true);
-const recherchePokemonRequete = ref('');
+const router = useRouter()
+const allPokemons = ref<Pokemon[]>([]) // Tous les Pokémons
+const displayedPokemons = ref<Pokemon[]>([]) // Pokémon affichés après filtres éventuels
+const isLoading = ref(true)
+const recherchePokemonRequete = ref('')
 const generations = ref([
-  { label: "1", value: 1},
-  { label: "2", value: 2},
-  { label: "3", value: 3},
-  { label: "4", value: 4},
-  { label: "5", value: 5},
-  { label: "6", value: 6},
-  { label: "7", value: 7},
-  { label: "8", value: 8},
-  { label: "9", value: 9},
-]);
-const selectedGenerations = ref<number[]>(generations.value.map((gen) => gen.value));
+  { label: '1', value: 1 },
+  { label: '2', value: 2 },
+  { label: '3', value: 3 },
+  { label: '4', value: 4 },
+  { label: '5', value: 5 },
+  { label: '6', value: 6 },
+  { label: '7', value: 7 },
+  { label: '8', value: 8 },
+  { label: '9', value: 9 },
+])
+const selectedGenerations = ref<number[]>(generations.value.map((gen) => gen.value))
 const visibleCount = ref(20) // Nombre de Pokémon visible au chargement de la page
 const types = ref([
-  { id: "normal", name: 'Normal', icon: 'src/assets/img/icon/Icône_Type_Normal_HOME.png' },
-  { id: "grass", name: 'Grass', icon: 'src/assets/img/icon/Icône_Type_Plante_HOME.png' },
-  { id: "fire", name: 'Fire', icon: 'src/assets/img/icon/Icône_Type_Feu_HOME.png' },
-  { id: "water", name: 'Water', icon: 'src/assets/img/icon/Icône_Type_Eau_HOME.png' },
-  { id: "electric", name: 'Electric', icon: 'src/assets/img/icon/Icône_Type_Électrik_HOME.png' },
-  { id: "flying", name: 'Flying', icon: 'src/assets/img/icon/Icône_Type_Vol_HOME.png' },
-  { id: "bug", name: 'Bug', icon: 'src/assets/img/icon/Icône_Type_Insecte_HOME.png' },
-  { id: "rock", name: 'Rock', icon: 'src/assets/img/icon/Icône_Type_Roche_HOME.png' },
-  { id: "ground", name: 'Ground', icon: 'src/assets/img/icon/Icône_Type_Sol_HOME.png' },
-  { id: "psychic", name: 'Psychic', icon: 'src/assets/img/icon/Icône_Type_Psy_HOME.png' },
-  { id: "poison", name: 'Poison', icon: 'src/assets/img/icon/Icône_Type_Poison_HOME.png' },
-  { id: "ghost", name: 'Ghost', icon: 'src/assets/img/icon/Icône_Type_Spectre_HOME.png' },
-  { id: "dark", name: 'Dark', icon: 'src/assets/img/icon/Icône_Type_Ténèbres_HOME.png' },
-  { id: "steel", name: 'Steel', icon: 'src/assets/img/icon/Icône_Type_Acier_HOME.png' },
-  { id: "fighting", name: 'Fighting', icon: 'src/assets/img/icon/Icône_Type_Combat_HOME.png' },
-  { id: "ice", name: 'Ice', icon: 'src/assets/img/icon/Icône_Type_Glace_HOME.png' },
-  { id: "dragon", name: 'dragon', icon: 'src/assets/img/icon/Icône_Type_Dragon_HOME.png' },
-  { id: "fairy", name: 'Fairy', icon: 'src/assets/img/icon/Icône_Type_Fée_HOME.png' },
-
-]);
-const selectedTypes = ref<string[]>(["normal", "grass", "fire", "water", "electric", "flying", "bug", "rock", "ground", "psychic", "poison", "ghost", "dark", "steel", "fighting", "ice", "dragon", "fairy"]);
+  { id: 'normal', name: 'Normal', icon: 'src/assets/img/icon/Icône_Type_Normal_HOME.png' },
+  { id: 'grass', name: 'Grass', icon: 'src/assets/img/icon/Icône_Type_Plante_HOME.png' },
+  { id: 'fire', name: 'Fire', icon: 'src/assets/img/icon/Icône_Type_Feu_HOME.png' },
+  { id: 'water', name: 'Water', icon: 'src/assets/img/icon/Icône_Type_Eau_HOME.png' },
+  { id: 'electric', name: 'Electric', icon: 'src/assets/img/icon/Icône_Type_Électrik_HOME.png' },
+  { id: 'flying', name: 'Flying', icon: 'src/assets/img/icon/Icône_Type_Vol_HOME.png' },
+  { id: 'bug', name: 'Bug', icon: 'src/assets/img/icon/Icône_Type_Insecte_HOME.png' },
+  { id: 'rock', name: 'Rock', icon: 'src/assets/img/icon/Icône_Type_Roche_HOME.png' },
+  { id: 'ground', name: 'Ground', icon: 'src/assets/img/icon/Icône_Type_Sol_HOME.png' },
+  { id: 'psychic', name: 'Psychic', icon: 'src/assets/img/icon/Icône_Type_Psy_HOME.png' },
+  { id: 'poison', name: 'Poison', icon: 'src/assets/img/icon/Icône_Type_Poison_HOME.png' },
+  { id: 'ghost', name: 'Ghost', icon: 'src/assets/img/icon/Icône_Type_Spectre_HOME.png' },
+  { id: 'dark', name: 'Dark', icon: 'src/assets/img/icon/Icône_Type_Ténèbres_HOME.png' },
+  { id: 'steel', name: 'Steel', icon: 'src/assets/img/icon/Icône_Type_Acier_HOME.png' },
+  { id: 'fighting', name: 'Fighting', icon: 'src/assets/img/icon/Icône_Type_Combat_HOME.png' },
+  { id: 'ice', name: 'Ice', icon: 'src/assets/img/icon/Icône_Type_Glace_HOME.png' },
+  { id: 'dragon', name: 'dragon', icon: 'src/assets/img/icon/Icône_Type_Dragon_HOME.png' },
+  { id: 'fairy', name: 'Fairy', icon: 'src/assets/img/icon/Icône_Type_Fée_HOME.png' },
+])
+const selectedTypes = ref<string[]>([
+  'normal',
+  'grass',
+  'fire',
+  'water',
+  'electric',
+  'flying',
+  'bug',
+  'rock',
+  'ground',
+  'psychic',
+  'poison',
+  'ghost',
+  'dark',
+  'steel',
+  'fighting',
+  'ice',
+  'dragon',
+  'fairy',
+])
 
 async function fetchAllPokemons() {
   try {
-    const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=1025");
-    if (!response.ok) throw new Error("Erreur lors du chargement des Pokémon");
-    const data = await response.json();
+    const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1025')
+    if (!response.ok) throw new Error('Erreur lors du chargement des Pokémon')
+    const data = await response.json()
 
-     // Charger les détails de chaque Pokémon
+    // Charger les détails de chaque Pokémon
     const pokemonDetails = await Promise.all(
       data.results.map(async (pokemon) => {
-        const pokemonData = await fetch(pokemon.url).then((res) => res.json());
+        const pokemonData = await fetch(pokemon.url).then((res) => res.json())
         return {
           id: pokemonData.id,
           name: pokemonData.name,
-          image: pokemonData.sprites.front_default || "",
+          image: pokemonData.sprites.front_default || '',
           types: pokemonData.types.map((type) => type.type.name),
-        };
-      })
-    );
+        }
+      }),
+    )
 
-    allPokemons.value = pokemonDetails; // Stockage des Pokémon
-    displayedPokemons.value = pokemonDetails; // Initialiser la liste à afficher
-    isLoading.value = false;
+    allPokemons.value = pokemonDetails // Stockage des Pokémon
+    displayedPokemons.value = pokemonDetails // Initialiser la liste à afficher
+    isLoading.value = false
   } catch (err) {
-    console.error("Erreur lors du chargement des Pokémon :", err);
-    isLoading.value = false;
+    console.error('Erreur lors du chargement des Pokémon :', err)
+    isLoading.value = false
   }
 }
 
 // Filtrage par génération
 function filterByGeneration(pokemons: Pokemon[]): Pokemon[] {
   if (selectedGenerations.value.length === 0) {
-    return pokemons;
+    return pokemons
   }
 
   return pokemons.filter((pokemon) => {
-    const id = pokemon.id;
+    const id = pokemon.id
     return (
       (selectedGenerations.value.includes(1) && id >= 1 && id <= 151) ||
       (selectedGenerations.value.includes(2) && id >= 152 && id <= 251) ||
@@ -169,112 +187,110 @@ function filterByGeneration(pokemons: Pokemon[]): Pokemon[] {
       (selectedGenerations.value.includes(7) && id >= 722 && id <= 809) ||
       (selectedGenerations.value.includes(8) && id >= 810 && id <= 905) ||
       (selectedGenerations.value.includes(9) && id >= 906 && id <= 1025)
-    );
-  });
+    )
+  })
 }
 
 // Filtrage par recherche textuelle
 function filterBySearch(pokemons: Pokemon[]): Pokemon[] {
-  const query = recherchePokemonRequete.value.trim().toLowerCase();
+  const query = recherchePokemonRequete.value.trim().toLowerCase()
   if (!query) {
-    return pokemons; // Aucun texte recherché, afficher tous les Pokémon
+    return pokemons // Aucun texte recherché, afficher tous les Pokémon
   }
 
   return pokemons.filter(
-    (pokemon) =>
-      pokemon.name.toLowerCase().includes(query) ||
-      pokemon.id.toString() === query
-  );
+    (pokemon) => pokemon.name.toLowerCase().includes(query) || pokemon.id.toString() === query,
+  )
 }
 
 // Combinaison des filtres
 function filterAndSearch() {
   if (selectedGenerations.value.length === 0 || selectedTypes.value.length === 0) {
-    displayedPokemons.value = [];
-    return;
+    displayedPokemons.value = []
+    return
   }
 
-  let filtered = filterByGeneration(allPokemons.value);
-  filtered = filterByType(filtered);
-  filtered = filterBySearch(filtered);
+  let filtered = filterByGeneration(allPokemons.value)
+  filtered = filterByType(filtered)
+  filtered = filterBySearch(filtered)
 
-  displayedPokemons.value = filtered;
+  displayedPokemons.value = filtered
 }
 
 function selectAllGenerations() {
-  selectedGenerations.value = generations.value.map((gen) => gen.value);
-  filterAndSearch();
+  selectedGenerations.value = generations.value.map((gen) => gen.value)
+  filterAndSearch()
 }
 
 function clearGenerations() {
-  selectedGenerations.value = [];
-  filterAndSearch();
+  selectedGenerations.value = []
+  filterAndSearch()
 }
 
 function selectAllTypes() {
-  selectedTypes.value = types.value.map((type) => type.id);
-  filterAndSearch();
+  selectedTypes.value = types.value.map((type) => type.id)
+  filterAndSearch()
 }
 
 function clearTypes() {
-  selectedTypes.value = [];
-  filterAndSearch();
+  selectedTypes.value = []
+  filterAndSearch()
 }
 
 function getDisplayPokemons(): Pokemon[] {
-  return displayedPokemons.value.slice(0, visibleCount.value);
+  return displayedPokemons.value.slice(0, visibleCount.value)
 }
 
 function loadMorePokemons() {
-  visibleCount.value += 20;
+  visibleCount.value += 20
 }
 
 function getGenerationNumber(num: number): string {
-  const numberMap = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"];
-  return numberMap[num - 1];
+  const numberMap = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX']
+  return numberMap[num - 1]
 }
 
 function toggleGeneration(gen: number) {
-  if(selectedGenerations.value.includes(gen)) {
-    selectedGenerations.value = selectedGenerations.value.filter((g) => g !== gen);
+  if (selectedGenerations.value.includes(gen)) {
+    selectedGenerations.value = selectedGenerations.value.filter((g) => g !== gen)
   } else {
-    selectedGenerations.value.push(gen);
+    selectedGenerations.value.push(gen)
   }
-  filterAndSearch();
+  filterAndSearch()
 }
 
 function toggleType(typeId: string) {
   if (selectedTypes.value.includes(typeId)) {
-    selectedTypes.value = selectedTypes.value.filter((id) => id !== typeId);
+    selectedTypes.value = selectedTypes.value.filter((id) => id !== typeId)
   } else {
-    selectedTypes.value.push(typeId);
+    selectedTypes.value.push(typeId)
   }
-  filterAndSearch();
+  filterAndSearch()
 }
 
 function filterByType(pokemons: Pokemon[]): Pokemon[] {
   if (selectedTypes.value.length === 0) {
-    return pokemons;
+    return pokemons
   }
 
   return pokemons.filter((pokemon) =>
-    pokemon.types.some((type) => selectedTypes.value.includes(type))
-  );
+    pokemon.types.some((type) => selectedTypes.value.includes(type)),
+  )
 }
 
 onMounted(async () => {
   console.log('Chargement intial')
-  fetchAllPokemons();
+  fetchAllPokemons()
 
-  window.addEventListener("scroll", () => {
+  window.addEventListener('scroll', () => {
     if (
       window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
       visibleCount.value < displayedPokemons.value.length
     ) {
-      loadMorePokemons();
+      loadMorePokemons()
     }
-  });
-});
+  })
+})
 
 function viewPokemonDetails(id) {
   // console.log(Navigate to Pokémon details using the ID : ${id})
@@ -309,7 +325,7 @@ h1 {
   margin: 1rem auto;
 }
 
-.search-and-generations{
+.search-and-generations {
   display: flex;
   align-items: center;
   gap: 1rem;
