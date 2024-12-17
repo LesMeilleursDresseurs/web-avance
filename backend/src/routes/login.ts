@@ -51,5 +51,5 @@ server.post(
     } catch (error) {
       return reply.status(500).send({ error: 'An error occurred' });
     }
-  }
+  },
 );
