@@ -25,3 +25,21 @@ jobs:
           cd ../backend
           npm install prettier
           npm run check
+  build-check: # Check that the codebase builds
+    name: Build check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20
+      - name: Install dependencies and build
+        run: |
+          cd frontend
+          npm install
+          npm run build
+          cd ../backend
+          npm install
+          npm run setup_prisma
+          npm run build
