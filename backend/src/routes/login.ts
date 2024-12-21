@@ -1,6 +1,11 @@
-import { server } from '../providers/server';
-import { postUserSchema, postUserSchemaResponse, errorResponseSchema } from '../schemas/schemas';
-import { db } from '../providers/db';
+import { server } from '@providers/server';
+import {
+  postUserSchema,
+  postUserSchemaResponse,
+  errorResponseSchema,
+  userResponse,
+} from '@schemas/schemas';
+import { db } from '@providers/db';
 
 server.post(
   '/login',
@@ -47,7 +52,16 @@ server.post(
           },
         });
       }
-      return reply.status(200).send(user);
+      // Convert the user object to the response object (null for Prisma => undefined for Typebox)
+      const res: userResponse = {
+        email: user.email,
+        picture: user.picture || undefined,
+        firstname: user.firstname || undefined,
+        lastname: user.lastname || undefined,
+        id: String(user.id),
+      };
+
+      return reply.status(200).send(res);
     } catch (error) {
       return reply.status(500).send({ error: 'An error occurred' });
     }

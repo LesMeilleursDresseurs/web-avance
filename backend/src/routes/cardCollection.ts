@@ -1,4 +1,4 @@
-import { server } from '../providers/server';
+import { server } from '@providers/server';
 import {
   errorResponseSchema,
   cardQuerySchema,
@@ -7,8 +7,8 @@ import {
   getCardsQuerySchema,
   getCardsResponseSchema,
   getCardResponse,
-} from '../schemas/schemas';
-import { db } from '../providers/db';
+} from '@schemas/schemas';
+import { db } from '@providers/db';
 
 server.get(
   '/getCards',
@@ -37,7 +37,7 @@ server.get(
     console.log('test cards ', cards);
 
     if (cards.length === 0) {
-      return response.status(200).send({ message: `No cards found`, cards });
+      return response.status(200).send({ message: `No cards found`, cards: [] });
     }
     const cardsIds = cards.map((card) => card.idCard);
     return response.status(200).send({ message: `Cards found`, cards: cardsIds });
@@ -101,7 +101,7 @@ server.delete(
       return response.status(400).send({ error: 'userId is required' });
     }
 
-    const deletedCard = await db.cardCollection.delete({
+    await db.cardCollection.delete({
       where: {
         idCard_idUser: {
           idCard: cardId,
