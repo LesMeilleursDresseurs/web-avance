@@ -33,7 +33,9 @@ For branch names
 > In the backend 
 > - `cd backend`
 > - `npm install`
-> - `npm start`
+> - `npm run setup_prisma`
+> - `npm run build`
+> - `npm run start`
 >
 > In the frontend 
 > - `cd frontend`

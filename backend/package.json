@@ -14,18 +14,19 @@
     "prettier": "^3.3.3",
     "prisma": "^5.22.0",
     "rimraf": "^6.0.1",
+    "tsc-alias": "^1.8.10",
     "tsx": "^4.19.2",
     "typescript": "^5.6.3"
   },
   "name": "fastify",
   "version": "1.0.0",
-  "main": "src/providers/server.ts",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "tsx --watch src/index.ts",
     "setup_prisma": "prisma db push && prisma generate && echo Prisma setup done! || echo Prisma setup failed!",
     "clean": "rimraf dist && echo Clean done! || echo Clean failed!",
-    "build": "echo Build Server... && tsc src/index.ts --outDir dist && echo Build Server done! || echo Build Server failed!",
-    "start": "node index.js",
+    "build": "echo Build Server... && tsc && tsc-alias && echo Build Server done! || echo Build Server failed!",
+    "start": "node dist/index.js",
     "format": "prettier --write \"src/**/*.{ts,js}\"",
     "check": "prettier --check \"src/**/*.{ts,js}\""
   },
