@@ -141,22 +141,27 @@ const selectedTypes = ref<string[]>([
   'fairy',
 ])
 
-async function fetchPokemons() {
-  const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`)
-  const data = await response.json()
-  const pokemonDetails = await Promise.all(
-    data.results.map(async (pokemon) => {
-      const pokemonData = await fetch(pokemon.url).then((res) => res.json())
-      return {
-        id: pokemonData.id,
-        name: pokemonData.name,
-        image: pokemonData.sprites.front_default || '',
-      }
-    }),
-  )
-  pokemons.value = [...pokemons.value, ...pokemonDetails]
-  offset += limit
-  setTimeout(() => {
+async function fetchAllPokemons() {
+  try {
+    const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1025')
+    if (!response.ok) throw new Error('Erreur lors du chargement des Pokémon')
+    const data = await response.json()
+
+    // Charger les détails de chaque Pokémon
+    const pokemonDetails = await Promise.all(
+      data.results.map(async (pokemon) => {
+        const pokemonData = await fetch(pokemon.url).then((res) => res.json())
+        return {
+          id: pokemonData.id,
+          name: pokemonData.name,
+          image: pokemonData.sprites.front_default || '',
+          types: pokemonData.types.map((type) => type.type.name),
+        }
+      }),
+    )
+
+    allPokemons.value = pokemonDetails // Stockage des Pokémon
+    displayedPokemons.value = pokemonDetails // Initialiser la liste à afficher
     isLoading.value = false
   } catch (err) {
     console.error('Erreur lors du chargement des Pokémon :', err)
