@@ -34,33 +34,65 @@
             {{ userConnected.lastname }}
           </p>
         </div>
-        <div class="stats">
-          <p><strong>Total </strong>cards: {{ cardsCollection.length }}</p>
+      </div>
+      <div class="content">
+        <div class="general-chart">
+          <Doughnut :data="genralChart()" :options="chartOptions" />
+        </div>
+        <div class="grid">
+          <PokemonCard :card="card" v-for="card in cardsCollection" :key="card.id" />
         </div>
       </div>
-      <div class="content"></div>
     </main>
   </div>
 </template>
 
 <script lang="ts">
 import MenuTopBar from '@/components/MenuTopBar.vue'
+import {Chart as ChartJS, ArcElement, Tooltip, Legend, Colors} from 'chart.js'
+import { Doughnut } from 'vue-chartjs'
 import store from '@/store'
+import PokemonCard from "@/components/Card.vue";
+
+ChartJS.register(ArcElement, Tooltip, Legend, Colors)
 
 export default {
   name: 'ProfilePage',
-  components: { MenuTopBar },
+  components: {PokemonCard, MenuTopBar, Doughnut },
+  data() {
+    return {
+      nbCardsWorld: 1200,
+      chartOptions: {
+        responsive: true,
+        maintainAspectRatio: false
+      },
+    }
+  },
   computed: {
     userConnected: () => {
       return store.getters['login/getUserConnected']
     },
     cardsCollection: () => {
+      console.log(store.getters['pokedex/getCardsCollection'])
       return store.getters['pokedex/getCardsCollection']
     },
   },
-  mounted() {
-    store.dispatch('pokedex/getCardsCollection', this.userConnected.id)
+  async mounted() {
+    await store.dispatch('pokedex/loadCardsCollection', this.userConnected.id)
   },
+  methods: {
+    genralChart() {
+      return {
+        labels: ['Your cards', 'Other cards'],
+        datasets: [
+          {
+            Colors,
+            data: [this.cardsCollection.length, this.nbCardsWorld]
+          }
+        ]
+      }
+    }
+  }
 }
 </script>
 
@@ -78,23 +110,28 @@ div.body p {
 }
 
 main {
-  height: 100%;
+  height: calc(100% - 50px);
   width: 100%;
   margin: 0 0;
-  padding: 0 0;
   display: flex;
+  align-items: center;
+  padding: 15px 0 10px 0;
 }
 
 div.profile-details {
-  width: 20%;
-  height: 80%;
-  margin: 2% 2%;
+  padding: 3% 3%;
+  width: 24%;
+  height: 50%;
   display: flex;
   align-items: center;
   flex-direction: column;
-  justify-content: space-around;
-  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  justify-content: center;
+  gap: 15%;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
   min-width: 200px;
+  border-radius: 5px 5px;
+  margin-right: 15px;
+  margin-left: 15px;
 }
 
 img.picture {
@@ -109,22 +146,36 @@ img.picture {
   margin-right: 20px;
 }
 
-.stats {
-  height: 35%;
+.content {
+  height: 100%;
+  overflow-y: auto;
+  width: 100%;
   display: flex;
   align-items: center;
   flex-direction: column;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 8px;
+  background-color: transparent;
+}
+/* Add a thumb */
+::-webkit-scrollbar-thumb {
+  background: #ff6f61;
+  border-radius: 20px;
+}
+
+.general-chart {
+  width: 50%;
+  height: auto;
+}
+
+.grid {
+  margin-top: 25px;
+  display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-}
-
-.content {
-  min-width: 70%;
-}
-
-.content h3 {
-  text-align: center;
-  width: 100%;
-  color: #d32f2f !important;
-  margin-top: 20px;
+  gap: 1rem;
 }
 </style>
