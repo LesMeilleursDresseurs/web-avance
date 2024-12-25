@@ -12,88 +12,77 @@ const getters = {
 }
 
 const actions = {
-  async addCard({ commit, rootGetters, dispatch }, cardId: string) {
-    const userConnected = rootGetters['login/getUserConnected']
-    axios
-      .post(`${API_URL}/addCard?cardId=${cardId}&userId=${userConnected.id}`)
-      .then((response) => {
-        commit('setAddCard', cardId)
+  async addCard({ commit, rootGetters, dispatch }, card) {
+    const userConnected = rootGetters['login/getUserConnected'];
+    card.idUser = userConnected.id;
+
+    await axios
+      .post(`${API_URL}/addCard`, card)
+      .then(() => {
+        commit('addCardToCollection', card);
         dispatch(
           'notification/newNotification',
-          {
-            message: cardId + ' card successfully added',
-            good: true,
-          },
+          { message: `${card.name} added successfully`, good: true },
           { root: true }
-        )
+        );
       })
       .catch(async (error) => {
         await dispatch(
           'notification/newNotification',
-          {
-            message: 'Error during the adding of the card' + error,
-            good: false,
-          },
+          { message: `Error adding card: ${error}`, good: false },
           { root: true }
-        )
-      })
+        );
+      });
   },
-  async removeCard({ commit, rootGetters, dispatch }, cardId: string) {
-    const userConnected = rootGetters['login/getUserConnected']
-    axios
-      .delete(`${API_URL}/deleteCard?cardId=${cardId}&userId=${userConnected.id}`)
-      .then((response) => {
-        commit('removeCard', cardId)
+  async removeCard({ commit, rootGetters, dispatch }, card) {
+    const userConnected = rootGetters['login/getUserConnected'];
+
+    await axios
+      .delete(`${API_URL}/deleteCard?cardId=${card.id}&userId=${userConnected.id}`)
+      .then(() => {
+        commit('removeCardFromCollection', card.id);
         dispatch(
           'notification/newNotification',
-          {
-            message: cardId + ' card successfully deleted',
-            good: false,
-          },
+          { message: `Card removed successfully`, good: true },
           { root: true }
-        )
+        );
       })
       .catch(async (error) => {
         await dispatch(
           'notification/newNotification',
-          {
-            message: 'Error during the removing of the card' + error,
-            good: false,
-          },
+          { message: `Error removing card: ${error}`, good: false },
           { root: true }
-        )
-      })
+        );
+      });
   },
   async loadCardsCollection({ commit, dispatch }, userId) {
-    axios
+    await axios
       .get(`${API_URL}/getCards?userId=${userId}`)
       .then((response) => {
-        commit('setCards', response.data.cards)
+        commit('setCardsCollection', response.data.cards);
       })
       .catch(async (error) => {
         await dispatch(
           'notification/newNotification',
-          {
-            message: 'Error during the loading of the pokedex' + error,
-            good: false,
-          },
+          { message: `Error loading cards: ${error}`, good: false },
           { root: true }
-        )
-      })
-  },
+        );
+      });
+  }
 }
 
 const mutations = {
-  setCards(state, cards) {
-    state.cardsCollection = cards
+  setCardsCollection(state, cards) {
+    state.cardsCollection = cards;
   },
-  setAddCard(state, id: String | null): void {
-    state.cardsCollection.push(id)
+  addCardToCollection(state, card) {
+    state.cardsCollection.push(card);
   },
-  removeCard(state, id: String | null): void {
-    state.cardsCollection = state.cardsCollection.filter((card) => card !== id)
+  removeCardFromCollection(state, cardId) {
+    state.cardsCollection = state.cardsCollection.filter((card) => card.id !== cardId);
   },
-}
+};
+
 
 export default {
   state,

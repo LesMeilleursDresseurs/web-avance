@@ -20,12 +20,16 @@ model User {
 }
 
 model CardCollection {
-  idCard String
-  idUser Int
+  idUser  Int
+  idCard  String
+  localId String
+  name    String
+  image   String
 
-  // Relation field
+
   user User @relation(fields: [idUser], references: [id])
 
   @@id([idCard, idUser])
   @@index([idUser])
 }
+

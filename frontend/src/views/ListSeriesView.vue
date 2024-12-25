@@ -26,7 +26,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import MenuTopBar from '@/components/MenuTopBar.vue'
 
 export default {

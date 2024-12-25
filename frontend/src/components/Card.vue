@@ -67,22 +67,21 @@ export default {
     isAuthenticated() {
       return Object.keys(store.getters['login/getUserConnected']).length > 0
     },
-    isInCollection(): boolean {
-      return store.getters['pokedex/getCardsCollection'].includes(this.card.id)
+    isInCollection() {
+      for(let i = 0; i < store.getters['pokedex/getCardsCollection'].length; i++) {
+        if(store.getters['pokedex/getCardsCollection'][i].id === this.card.id) return true
+      }
+      return false
+    }
+  },
+  methods: {
+    async addToCollection() {
+      await store.dispatch('pokedex/addCard', this.card)
     },
-  },
-  setup(props) {
-    const addToCollection = async () => {
-      await store.dispatch('pokedex/addCard', props.card.id)
-    }
-    const removeFromCollection = async () => {
-      await store.dispatch('pokedex/removeCard', props.card.id)
-    }
-    return {
-      addToCollection,
-      removeFromCollection,
-    }
-  },
+    async removeFromCollection() {
+      await store.dispatch('pokedex/removeCard', this.card)
+    },
+  }
 }
 </script>
 
