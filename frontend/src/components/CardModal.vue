@@ -46,7 +46,15 @@
               </span>
             </div>
           </div>
-          <div v-if="card.evolveFrom" class="card-evolvefrom">
+          <div
+            v-if="
+              card.evolveFrom &&
+              card.stage !== 'MEGA' &&
+              card.stage !== 'VSTAR' &&
+              card.stage !== 'VMAX'
+            "
+            class="card-evolvefrom"
+          >
             <h2>Evolve From</h2>
             <div class="evolution-pokemon">
               <div class="evolve-from">
@@ -54,7 +62,7 @@
                   <img :src="childPokemon.image" :alt="childPokemon.name" class="card-img" />
                 </section>
                 <div class="details-pokemon">
-                  <h3>{{ card.evolveFrom }} #{{ childPokemon.id }}</h3>
+                  <p>{{ card.evolveFrom }} #{{ childPokemon.id }}</p>
                 </div>
               </div>
               <div class="evolution-line"></div>
@@ -63,7 +71,7 @@
                   <img :src="initialPokemon.image" :alt="initialPokemon.name" class="card-img" />
                 </section>
                 <div class="details-pokemon">
-                  <h3>{{ card.name }} #{{ initialPokemon.id }}</h3>
+                  <p>{{ card.name }} #{{ initialPokemon.id }}</p>
                 </div>
               </div>
             </div>
@@ -107,10 +115,16 @@ export default {
     card: {
       handler(card) {
         console.log(card)
-        if (card && card.name) {
-          this.fetchInitialPokemon(card.name)
+        if (card && card.dexId) {
+          this.fetchInitialPokemon(card.dexId[0])
         }
-        if (card && card.evolveFrom) {
+        if (
+          card &&
+          card.evolveFrom &&
+          card.stage !== 'MEGA' &&
+          card.stage !== 'VSTAR' &&
+          card.stage !== 'VMAX'
+        ) {
           this.fetchEvolvePokemon(card.evolveFrom)
         }
         if (card && card.name) {
@@ -129,11 +143,9 @@ export default {
         this.close()
       }
     },
-    async fetchInitialPokemon(pokemonName) {
+    async fetchInitialPokemon(pokemonId) {
       try {
-        const response = await fetch(
-          `https://pokeapi.co/api/v2/pokemon/${pokemonName.toLowerCase()}`,
-        )
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`)
         const pokemon = await response.json()
         this.initialPokemon = {
           id: pokemon.id,
