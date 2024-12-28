@@ -22,7 +22,7 @@
             </span>
           </div>
 
-          <div class="card-weakness">
+          <div v-if="card.weaknesses" class="card-weakness">
             <h2>Weaknesses</h2>
             <span
               v-for="(weakness, index) in card.weaknesses"
@@ -32,7 +32,7 @@
               {{ weakness.type }}
             </span>
           </div>
-          <div class="card-description">
+          <div v-if="card.description" class="card-description">
             <h2>Story</h2>
             <p>{{ card.description }}</p>
           </div>
@@ -72,9 +72,16 @@
       </section>
 
       <footer class="modal-footer">
-        <slot name="footer"> This is the default footer! </slot>
-        <Accordion title="Others Cards of "> Contenu de la section 1 </Accordion>
-        <button type="button" class="btn-green" @click="close">Close Modal</button>
+        <Accordion title="Others cards">
+          <div class="other-cards">
+            <img
+              v-for="card in otherCards"
+              :key="card.id"
+              :src="card.image + `/low.png`"
+              alt="card.name"
+            />
+          </div>
+        </Accordion>
       </footer>
     </div>
   </div>
