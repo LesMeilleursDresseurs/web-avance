@@ -82,7 +82,7 @@
         </div>
       </section>
 
-      <footer v-if="card.dexId && otherCards" class="modal-footer">
+      <footer v-if="card.dexId && otherCards !== {}" class="modal-footer">
         <Accordion title="Others cards" :other-cards="otherCards"> </Accordion>
       </footer>
     </div>
@@ -179,6 +179,9 @@ export default {
           }
           if (name[i] === '&') {
             name = name.replace('&', '%26')
+          }
+          if (name[i] === "'") {
+            name = name.replace("'", '%27')
           }
         }
       }
@@ -332,13 +335,6 @@ export default {
   font-weight: bold;
   color: #4aae9b;
   background: transparent;
-}
-
-.btn-green {
-  color: white;
-  background: #4aae9b;
-  border: 1px solid #4aae9b;
-  border-radius: 2px;
 }
 
 .badge-default {

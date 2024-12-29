@@ -4,20 +4,18 @@
       <span>{{ isOpen ? '⯆' : '▲ ' }}</span>
     </div>
     <div class="accordion-body" v-if="isOpen">
-      <div class="other-cards">
-        <img
-          v-for="card in otherCards"
-          :key="card.id"
-          :src="card.image + `/low.png`"
-          :alt="card.id"
-        />
+      <div class="cards-grid">
+        <PokemonCard class="pokemon-card" v-for="card in otherCards" :card="card" :key="card.id" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import PokemonCard from '@/components/Card.vue'
+
 export default {
+  components: { PokemonCard },
   props: {
     title: {
       type: String,
@@ -61,6 +59,17 @@ export default {
   padding: 15px;
   border-top: 1px solid #ddd;
   animation: fadeIn 0.3s ease;
+}
+.cards-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem 25px;
+  margin: 0 auto;
+}
+.pokemon-card {
+  cursor: initial !important;
 }
 @keyframes fadeIn {
   from {
