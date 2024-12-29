@@ -72,33 +72,20 @@ export default {
     isAuthenticated() {
       return Object.keys(store.getters['login/getUserConnected']).length > 0
     },
-    isInCollection(): boolean {
-      return store.getters['pokedex/getCardsCollection'].includes(this.card.id)
+    isInCollection() {
+      for (let i = 0; i < store.getters['pokedex/getCardsCollection'].length; i++) {
+        if (store.getters['pokedex/getCardsCollection'][i].id === this.card.id) return true
+      }
+      return false
     },
   },
-  setup(props, { emit }) {
-    const getInformationsCard = async (card) => {
-      const response = await fetch(`https://api.tcgdex.net/v2/en/cards/${card.id}`)
-      const data = await response.json()
-      console.log('data', data)
-      return data
-    }
-    const selectCard = async (card) => {
-      const cardInfo = await getInformationsCard(card)
-      emit('click', cardInfo)
-    }
-    const addToCollection = async () => {
-      await store.dispatch('pokedex/addCard', props.card.id)
-    }
-    const removeFromCollection = async () => {
-      await store.dispatch('pokedex/removeCard', props.card.id)
-    }
-    return {
-      addToCollection,
-      removeFromCollection,
-      getInformationsCard,
-      selectCard,
-    }
+  methods: {
+    async addToCollection() {
+      await store.dispatch('pokedex/addCard', this.card)
+    },
+    async removeFromCollection() {
+      await store.dispatch('pokedex/removeCard', this.card)
+    },
   },
 }
 </script>

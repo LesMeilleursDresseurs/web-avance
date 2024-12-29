@@ -118,6 +118,7 @@ header {
   width: 100%;
   z-index: 2;
   border-bottom: 2px solid #ff5a50;
+  height: 55px;
 }
 
 .logo-container {

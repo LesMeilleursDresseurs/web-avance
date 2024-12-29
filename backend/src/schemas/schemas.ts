@@ -29,9 +29,25 @@ export const getCardsQuerySchema = t.Object({
 export const cardResponseSchema = t.Object({
   message: t.String(),
 });
+
+export const addCardBodySchema = t.Object({
+  idUser: t.Integer(),
+  id: t.String(),
+  localId: t.String(),
+  name: t.String(),
+  image: t.String(),
+});
+
 export const getCardsResponseSchema = t.Object({
   message: t.String(),
-  cards: t.Array(t.String()),
+  cards: t.Array(
+    t.Object({
+      id: t.String(),
+      localId: t.String(),
+      name: t.String(),
+      image: t.String(),
+    }),
+  ),
 });
 
 export type cardResponse = Static<typeof cardResponseSchema>;

@@ -147,7 +147,6 @@ async function fetchAllPokemons() {
     if (!response.ok) throw new Error('Erreur lors du chargement des Pokémon')
     const data = await response.json()
 
-    // Charger les détails de chaque Pokémon
     const pokemonDetails = await Promise.all(
       data.results.map(async (pokemon) => {
         const pokemonData = await fetch(pokemon.url).then((res) => res.json())
