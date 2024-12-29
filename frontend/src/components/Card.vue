@@ -73,11 +73,11 @@ export default {
       return Object.keys(store.getters['login/getUserConnected']).length > 0
     },
     isInCollection() {
-      for(let i = 0; i < store.getters['pokedex/getCardsCollection'].length; i++) {
-        if(store.getters['pokedex/getCardsCollection'][i].id === this.card.id) return true
+      for (let i = 0; i < store.getters['pokedex/getCardsCollection'].length; i++) {
+        if (store.getters['pokedex/getCardsCollection'][i].id === this.card.id) return true
       }
       return false
-    }
+    },
   },
   methods: {
     async addToCollection() {

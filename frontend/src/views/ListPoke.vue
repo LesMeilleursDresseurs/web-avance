@@ -120,26 +120,26 @@ const types = ref([
   { id: 'dragon', name: 'dragon', icon: 'src/assets/img/icon/Icône_Type_Dragon_HOME.png' },
   { id: 'fairy', name: 'Fairy', icon: 'src/assets/img/icon/Icône_Type_Fée_HOME.png' },
 ])
-  const selectedTypes = ref<string[]>([
-    'normal',
-    'grass',
-    'fire',
-    'water',
-    'electric',
-    'flying',
-    'bug',
-    'rock',
-    'ground',
-    'psychic',
-    'poison',
-    'ghost',
-    'dark',
-    'steel',
-    'fighting',
-    'ice',
-    'dragon',
-    'fairy',
-  ])
+const selectedTypes = ref<string[]>([
+  'normal',
+  'grass',
+  'fire',
+  'water',
+  'electric',
+  'flying',
+  'bug',
+  'rock',
+  'ground',
+  'psychic',
+  'poison',
+  'ghost',
+  'dark',
+  'steel',
+  'fighting',
+  'ice',
+  'dragon',
+  'fairy',
+])
 
 async function fetchAllPokemons() {
   try {

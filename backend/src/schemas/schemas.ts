@@ -46,10 +46,9 @@ export const getCardsResponseSchema = t.Object({
       localId: t.String(),
       name: t.String(),
       image: t.String(),
-    })
+    }),
   ),
 });
-
 
 export type cardResponse = Static<typeof cardResponseSchema>;
 export type getCardResponse = Static<typeof getCardsResponseSchema>;

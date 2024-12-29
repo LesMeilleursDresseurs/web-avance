@@ -49,22 +49,22 @@
 
 <script lang="ts">
 import MenuTopBar from '@/components/MenuTopBar.vue'
-import {Chart as ChartJS, ArcElement, Tooltip, Legend, Colors} from 'chart.js'
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, Colors } from 'chart.js'
 import { Doughnut } from 'vue-chartjs'
 import store from '@/store'
-import PokemonCard from "@/components/Card.vue";
+import PokemonCard from '@/components/Card.vue'
 
 ChartJS.register(ArcElement, Tooltip, Legend, Colors)
 
 export default {
   name: 'ProfilePage',
-  components: {PokemonCard, MenuTopBar, Doughnut },
+  components: { PokemonCard, MenuTopBar, Doughnut },
   data() {
     return {
       nbCardsWorld: 1200,
       chartOptions: {
         responsive: true,
-        maintainAspectRatio: false
+        maintainAspectRatio: false,
       },
     }
   },
@@ -87,12 +87,12 @@ export default {
         datasets: [
           {
             Colors,
-            data: [this.cardsCollection.length, this.nbCardsWorld]
-          }
-        ]
+            data: [this.cardsCollection.length, this.nbCardsWorld],
+          },
+        ],
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

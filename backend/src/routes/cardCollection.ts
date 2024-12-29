@@ -28,7 +28,7 @@ server.get(
               localId: t.String(),
               name: t.String(),
               image: t.String(),
-            })
+            }),
           ),
         }),
         400: t.Object({
@@ -64,9 +64,8 @@ server.get(
         image,
       })),
     });
-  }
+  },
 );
-
 
 server.post(
   '/addCard',
