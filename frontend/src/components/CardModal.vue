@@ -7,15 +7,18 @@
 
       <section class="modal-body">
         <div class="left-section">
-          <img :src="card.image + `/high.png`" alt="Card Image" />
+          <CardAnimation3d class="card-image3D" :imgSrc="card.image + `/high.png`" />
         </div>
         <div class="right-section">
-          <h1>{{ card.name }} #{{ initialPokemon.id }}</h1>
+          <h1>{{ card.name }}</h1>
           <div class="card-info">
-            <span class="badge-default">HP : {{ card.hp }}</span>
+            <span v-if="card.category === 'Pokemon'" class="badge-default">HP : {{ card.hp }}</span>
             <span class="badge-default">Rarity : {{ card.rarity }}</span>
+            <span v-if="card.illustrator" class="badge-default"
+              >Illustrator : {{ card.illustrator }}</span
+            >
           </div>
-          <div class="card-type">
+          <div v-if="card.category === 'Pokemon'" class="card-type">
             <h2>Type</h2>
             <span v-for="type in card.types" :key="type" :style="getBadgeTypeStyle(type)">
               {{ type }}
@@ -80,28 +83,30 @@
       </section>
 
       <footer class="modal-footer">
-        <Accordion title="Others cards">
-          <div class="other-cards">
-            <img
-              v-for="card in otherCards"
-              :key="card.id"
-              :src="card.image + `/low.png`"
-              alt="card.name"
-            />
-          </div>
-        </Accordion>
+        <!--        <Accordion title="Others cards">-->
+        <!--          <div class="other-cards">-->
+        <!--            <img-->
+        <!--              v-for="card in otherCards"-->
+        <!--              :key="card.id"-->
+        <!--              :src="card.image + `/low.png`"-->
+        <!--              alt="card.name"-->
+        <!--            />-->
+        <!--          </div>-->
+        <!--        </Accordion>-->
       </footer>
     </div>
   </div>
 </template>
 <script>
 import { colors } from '@/constants/constants'
+import CardAnimation3d from '@/components/CardAnimation3d.vue'
 import Accordion from './Accordion.vue'
 export default {
   data() {
     return {
       initialPokemon: Object,
       childPokemon: Object,
+      otherCards: [],
     }
   },
   name: 'Modal',
@@ -109,26 +114,33 @@ export default {
     card: Object,
   },
   components: {
+    CardAnimation3d,
     Accordion,
   },
   watch: {
     card: {
       handler(card) {
-        console.log(card)
-        if (card && card.dexId) {
-          this.fetchInitialPokemon(card.dexId[0])
-        }
-        if (
-          card &&
-          card.evolveFrom &&
-          card.stage !== 'MEGA' &&
-          card.stage !== 'VSTAR' &&
-          card.stage !== 'VMAX'
-        ) {
-          this.fetchEvolvePokemon(card.evolveFrom)
-        }
-        if (card && card.name) {
-          this.fetchOthersCard(card.name)
+        if (card.category === 'Pokemon') {
+          console.log(card)
+          if (card && card.dexId) {
+            this.fetchInitialPokemon(card.dexId[0])
+            if (
+              card &&
+              card.evolveFrom &&
+              card.stage !== 'MEGA' &&
+              card.stage !== 'VSTAR' &&
+              card.stage !== 'VMAX'
+            ) {
+              this.fetchEvolvePokemon(card.evolveFrom)
+            }
+            if (card && card.name) {
+              this.fetchOthersCard(card.name)
+            }
+          }
+        } else {
+          if (card && card.name) {
+            this.fetchOthersCard(card.name)
+          }
         }
       },
       immediate: true,
@@ -180,9 +192,12 @@ export default {
           `https://api.tcgdex.net/v2/en/cards?name=${name}&category=Pokemon`,
         )
         const data = await response.json()
-        console.log(data)
+        this.otherCards = [...data]
+
+        console.log('data', data)
+        console.log('otherCards', this.otherCards)
       } catch (error) {
-        console.error('Erreur lors de la récupération des données :', error)
+        console.error('Error :', error)
       }
     },
     getBadgeTypeStyle(type) {
@@ -221,7 +236,7 @@ export default {
       return {
         borderRadius: '360px',
         border: `3px solid ${color}`,
-        background: `radial-gradient(circle, ${color}, rgba(255, 255, 255, 0) 60%)`,
+        background: `radial-gradient(circle, ${color}, rgba(255, 255, 255, 0) 70%)`,
       }
     },
   },
@@ -298,6 +313,7 @@ export default {
 .right-section h1 {
   font-size: 2em;
   font-weight: bold;
+  margin-left: 0;
   margin-bottom: 1rem;
 }
 .right-section h2 {
