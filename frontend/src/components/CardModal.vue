@@ -61,8 +61,8 @@
             <h2>Evolve From</h2>
             <div class="evolution-pokemon">
               <div class="evolve-from">
-                <section :style="getBackgroundColor(childPokemon.type)">
-                  <img :src="childPokemon.image" :alt="childPokemon.name" class="card-img" />
+                <section :style="getBackgroundColor(childPokemon.type)" class="pokemon-section">
+                  <img :src="childPokemon.image" :alt="childPokemon.name" class="pokemon-img" />
                 </section>
                 <div class="details-pokemon">
                   <p>{{ card.evolveFrom }} #{{ childPokemon.id }}</p>
@@ -70,8 +70,8 @@
               </div>
               <div class="evolution-line"></div>
               <div class="initial-pokemon">
-                <section :style="getBackgroundColor(initialPokemon.type)">
-                  <img :src="initialPokemon.image" :alt="initialPokemon.name" class="card-img" />
+                <section :style="getBackgroundColor(initialPokemon.type)" class="pokemon-section">
+                  <img :src="initialPokemon.image" :alt="initialPokemon.name" class="pokemon-img" />
                 </section>
                 <div class="details-pokemon">
                   <p>{{ card.name }} #{{ initialPokemon.id }}</p>
@@ -369,8 +369,20 @@ export default {
   width: 10vw;
   height: 0;
   border-bottom: 2px dashed #d2d1c1;
-  transform: translateY(-50%);
   z-index: 0;
+}
+.pokemon-section {
+  max-width: 100%;
+  max-height: 100%;
+  width: 10vw;
+  height: 10vw;
+}
+.pokemon-img {
+  max-width: 100%;
+  max-height: 100%;
+  width: 10vw;
+  height: 10vw;
+  image-rendering: pixelated;
 }
 .details-pokemon {
   display: flex;
