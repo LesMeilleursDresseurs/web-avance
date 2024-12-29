@@ -1,4 +1,4 @@
-import { server } from '../providers/server';
+import { server } from '@providers/server';
 import {
   errorResponseSchema,
   cardQuerySchema,
@@ -7,8 +7,8 @@ import {
   getCardsQuerySchema,
   getCardsResponseSchema,
   getCardResponse,
-} from '../schemas/schemas';
-import { db } from '../providers/db';
+} from '@schemas/schemas';
+import { db } from '@providers/db';
 
 import { Type as t } from '@sinclair/typebox';
 
@@ -104,7 +104,7 @@ server.post(
     });
 
     return response.status(200).send({ message: `Card added to collection` });
-  }
+  },
 );
 
 server.delete(
@@ -130,7 +130,7 @@ server.delete(
       return response.status(400).send({ error: 'userId is required' });
     }
 
-    const deletedCard = await db.cardCollection.delete({
+    await db.cardCollection.delete({
       where: {
         idCard_idUser: {
           idCard: cardId,
@@ -140,5 +140,5 @@ server.delete(
     });
 
     return response.status(200).send({ message: `Card removed from collection` });
-  }
+  },
 );

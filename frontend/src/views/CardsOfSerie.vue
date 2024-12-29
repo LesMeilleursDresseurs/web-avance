@@ -17,18 +17,20 @@
     </aside>
     <div v-if="isLoading" class="loading"><img src="@/assets/loader.gif" alt="loader" /></div>
     <div v-else-if="!isLoading && cards.length > 0" class="cards-grid">
-      <PokemonCard v-for="card in cards" :card="card" :key="card.id" />
+      <PokemonCard v-for="card in cards" :card="card" :key="card.id" @click="openModal" />
     </div>
     <div v-else class="no-cards">
       <p>We don't have cards for this set.</p>
     </div>
   </div>
+  <Modal v-if="selectedCard" :card="selectedCard" @close="closeModal" />
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, defineProps } from 'vue'
 import MenuTopBar from '@/components/MenuTopBar.vue'
 import PokemonCard, { type Card } from '@/components/Card.vue'
+import Modal from '@/components/CardModal.vue'
 
 type objectSetsAndCards = {
   [setId: string]: Card[]
@@ -47,6 +49,7 @@ const activeSet = ref({})
 const seriesId = props.id
 const isLoading = ref(true)
 const SetsAndCards = ref<objectSetsAndCards>({})
+const selectedCard = ref<Card | null>(null)
 
 const fetchSets = async () => {
   const response = await fetch(`https://api.tcgdex.net/v2/en/series/${seriesId}`)
@@ -79,6 +82,13 @@ const selectSet = (setId: string) => {
   isLoading.value = true
   activeSet.value = setId
   loadCards(setId)
+}
+
+const openModal = (card: Card) => {
+  selectedCard.value = card
+}
+const closeModal = () => {
+  selectedCard.value = null
 }
 
 onMounted(() => {

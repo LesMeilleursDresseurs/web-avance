@@ -1,5 +1,5 @@
 <template>
-  <div class="pokemon-card">
+  <div class="pokemon-card" @click="selectCard(card)">
     <img v-if="card.image" :src="cardImage" :alt="card.id" />
     <div v-else>
       <h4>{{ card.name }}</h4>
@@ -9,14 +9,19 @@
       <button
         v-if="!isInCollection"
         class="isNotIn"
-        @click="addToCollection"
+        @click.stop="addToCollection"
         aria-label="Add to collection"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15" height="15">
           <path d="M12 5v14m7-7H5" stroke="currentColor" stroke-width="2" fill="none" />
         </svg>
       </button>
-      <button v-else class="isIn" @click="removeFromCollection" aria-label="Remove from collection">
+      <button
+        v-else
+        class="isIn"
+        @click.stop="removeFromCollection"
+        aria-label="Remove from collection"
+      >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15" height="15">
           <path
             d="M3 6h18m-2 0v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6m5 4v6m4-6v6"
@@ -56,7 +61,7 @@ export default {
     if (this.isAuthenticated) {
       await store.dispatch(
         'pokedex/loadCardsCollection',
-        store.getters['login/getUserConnected'].id
+        store.getters['login/getUserConnected'].id,
       )
     }
   },
@@ -81,7 +86,7 @@ export default {
     async removeFromCollection() {
       await store.dispatch('pokedex/removeCard', this.card)
     },
-  }
+  },
 }
 </script>
 
