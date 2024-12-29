@@ -2,7 +2,9 @@
   <div class="modal-backdrop" @click="handleBackdropClick">
     <div class="modal" @click.stop>
       <header class="modal-header">
-        <button type="button" class="btn-close" @click="close">x</button>
+        <button type="button" class="btn-close" @click="close">
+          <img src="../assets/img/close.png" alt="close" class="button-close-img" />
+        </button>
       </header>
 
       <section class="modal-body">
@@ -287,9 +289,6 @@ export default {
 
 .modal-header {
   display: flex;
-}
-
-.modal-header {
   position: relative;
   border-bottom: 1px solid #eeeeee;
   color: #4aae9b;
@@ -339,18 +338,22 @@ export default {
   font-weight: bold;
   margin-bottom: 1vh;
 }
-
 .btn-close {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  background: #ff6b6b;
   border: none;
-  font-size: 20px;
-  padding: 10px;
   cursor: pointer;
-  font-weight: bold;
-  color: #4aae9b;
-  background: transparent;
+  padding: 0;
+}
+
+.button-close-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .badge-default {
