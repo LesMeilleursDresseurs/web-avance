@@ -7,7 +7,12 @@
 
       <section class="modal-body">
         <div class="left-section">
-          <CardAnimation3d class="card-image3D" :imgSrc="card.image + `/high.png`" />
+          <CardAnimation3d
+            v-if="!isSmallScreen"
+            class="card-image3D"
+            :imgSrc="card.image + `/high.png`"
+          />
+          <img v-else class="card-image" :src="card.image + `/low.png`" alt="Card Image" />
         </div>
         <div class="right-section">
           <h1>{{ card.name }}</h1>
@@ -98,6 +103,7 @@ export default {
       initialPokemon: Object,
       childPokemon: Object,
       otherCards: [],
+      isSmallScreen: false,
     }
   },
   name: 'Modal',
@@ -131,6 +137,13 @@ export default {
       immediate: true,
     },
   },
+  mounted() {
+    this.checkWindowSize()
+    window.addEventListener('resize', this.checkWindowSize)
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.checkWindowSize)
+  },
   methods: {
     close() {
       this.$emit('close')
@@ -139,6 +152,9 @@ export default {
       if (event.target === this.$el) {
         this.close()
       }
+    },
+    checkWindowSize() {
+      this.isSmallScreen = window.innerWidth < 768
     },
     async fetchInitialPokemon(pokemonId) {
       try {
