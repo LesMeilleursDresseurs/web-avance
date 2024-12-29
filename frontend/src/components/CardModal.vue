@@ -82,17 +82,8 @@
         </div>
       </section>
 
-      <footer class="modal-footer">
-        <!--        <Accordion title="Others cards">-->
-        <!--          <div class="other-cards">-->
-        <!--            <img-->
-        <!--              v-for="card in otherCards"-->
-        <!--              :key="card.id"-->
-        <!--              :src="card.image + `/low.png`"-->
-        <!--              alt="card.name"-->
-        <!--            />-->
-        <!--          </div>-->
-        <!--        </Accordion>-->
+      <footer v-if="card.dexId && otherCards" class="modal-footer">
+        <Accordion title="Others cards" :other-cards="otherCards"> </Accordion>
       </footer>
     </div>
   </div>
@@ -133,15 +124,9 @@ export default {
             ) {
               this.fetchEvolvePokemon(card.evolveFrom)
             }
-            if (card && card.name) {
-              this.fetchOthersCard(card.name)
-            }
-          }
-        } else {
-          if (card && card.name) {
-            this.fetchOthersCard(card.name)
           }
         }
+        this.fetchOtherCards(card.name)
       },
       immediate: true,
     },
@@ -186,12 +171,27 @@ export default {
         console.error('Erreur lors de la récupération des données :', error)
       }
     },
-    async fetchOthersCard(name) {
+    async fetchOtherCards(name) {
+      if (name) {
+        for (let i = 0; i < name.length; i++) {
+          if (name[i] === ' ') {
+            name = name.replace(' ', '%20')
+          }
+          if (name[i] === '&') {
+            name = name.replace('&', '%26')
+          }
+        }
+      }
+      console.log('name', name)
       try {
         const response = await fetch(
           `https://api.tcgdex.net/v2/en/cards?name=${name}&category=Pokemon`,
         )
         const data = await response.json()
+        if (data.length === 1) {
+          this.otherCards = []
+          return
+        }
         this.otherCards = [...data]
 
         console.log('data', data)
@@ -259,15 +259,14 @@ export default {
 .modal {
   background: #ffffff;
   box-shadow: 2px 2px 20px 1px;
-  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 80vh;
   display: flex;
   flex-direction: column;
-  margin: 2vh 2vw;
+  margin: 2vh 3vw;
 }
 
-.modal-header,
-.modal-footer {
-  padding: 1vh 2vw;
+.modal-header {
   display: flex;
 }
 

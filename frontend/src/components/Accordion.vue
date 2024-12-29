@@ -1,11 +1,17 @@
 <template>
   <div class="accordion">
     <div class="accordion-header" @click="toggle">
-      <h3>{{ title }}</h3>
-      <span>{{ isOpen ? '−' : '+' }}</span>
+      <span>{{ isOpen ? '⯆' : '▲ ' }}</span>
     </div>
     <div class="accordion-body" v-if="isOpen">
-      <slot></slot>
+      <div class="other-cards">
+        <img
+          v-for="card in otherCards"
+          :key="card.id"
+          :src="card.image + `/low.png`"
+          :alt="card.id"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -15,6 +21,10 @@ export default {
   props: {
     title: {
       type: String,
+      required: true,
+    },
+    otherCards: {
+      type: Array,
       required: true,
     },
   },
@@ -33,23 +43,22 @@ export default {
 
 <style scoped>
 .accordion {
-  border: 1px solid #ddd;
   border-radius: 5px;
   margin: 10px 0;
   overflow: hidden;
 }
 .accordion-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 15px;
-  background-color: #f7f7f7;
+  justify-content: center;
+  padding: 10px 20px;
+  background-color: #d2d1c1;
   cursor: pointer;
   font-weight: bold;
+  border-radius: 20px;
+  margin: 0 40vw;
 }
 .accordion-body {
   padding: 15px;
-  background-color: #fff;
   border-top: 1px solid #ddd;
   animation: fadeIn 0.3s ease;
 }
