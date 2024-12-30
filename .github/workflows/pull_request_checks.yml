@@ -1,4 +1,4 @@
-name: Pull request checks
+name: CI, Pull request checks
 
 on:
   pull_request:
@@ -8,20 +8,59 @@ on:
       - reopened
 
 jobs:
-  prettier-check: # Check that the codebase is formatted with prettier
-    name: Prettier format check
+  frontend-CI:
+    name: frontend pipeline
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
+    - name: checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20
+
+    - name: Install dependencies
+      run: |
+        cd frontend
+        npm install
+
+    - name: Check prettier formatting
+      run: |
+        cd frontend
+        npm run check
+
+    - name: Build the project
+      run: |
+        cd frontend
+        npm run build
+
+  backend-CI:
+    name: backend pipeline
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
       - name: Set up Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 20
-      - name: Install dependencies and check prettier format
+
+      - name: Install dependencies
         run: |
-          cd frontend
-          npm install prettier
+          cd backend
+          npm install
+
+      - name: Check prettier formatting
+        run: |
+          cd backend
           npm run check
-          cd ../backend
-          npm install prettier
-          npm run check
+
+      - name: Build the project
+        run: |
+          cd backend
+          npm run setup_prisma
+          npm run build
