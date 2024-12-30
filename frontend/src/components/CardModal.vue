@@ -2,27 +2,37 @@
   <div class="modal-backdrop" @click="handleBackdropClick">
     <div class="modal" @click.stop>
       <header class="modal-header">
-        <button type="button" class="btn-close" @click="close">x</button>
+        <button type="button" class="btn-close" @click="close">
+          <img src="../assets/img/close.png" alt="close" class="button-close-img" />
+        </button>
       </header>
 
       <section class="modal-body">
         <div class="left-section">
-          <img :src="card.image + `/high.png`" alt="Card Image" />
+          <CardAnimation3d
+            v-if="!isSmallScreen"
+            class="card-image3D"
+            :imgSrc="card.image + `/high.png`"
+          />
+          <img v-else class="card-image" :src="card.image + `/low.png`" alt="Card Image" />
         </div>
         <div class="right-section">
-          <h1>{{ card.name }} #{{ initialPokemon.id }}</h1>
+          <h1>{{ card.name }}</h1>
           <div class="card-info">
-            <span class="badge-default">HP : {{ card.hp }}</span>
+            <span v-if="card.category === 'Pokemon'" class="badge-default">HP : {{ card.hp }}</span>
             <span class="badge-default">Rarity : {{ card.rarity }}</span>
+            <span v-if="card.illustrator" class="badge-default"
+              >Illustrator : {{ card.illustrator }}</span
+            >
           </div>
-          <div class="card-type">
+          <div v-if="card.category === 'Pokemon'" class="card-type">
             <h2>Type</h2>
             <span v-for="type in card.types" :key="type" :style="getBadgeTypeStyle(type)">
               {{ type }}
             </span>
           </div>
 
-          <div class="card-weakness">
+          <div v-if="card.weaknesses" class="card-weakness">
             <h2>Weaknesses</h2>
             <span
               v-for="(weakness, index) in card.weaknesses"
@@ -32,7 +42,7 @@
               {{ weakness.type }}
             </span>
           </div>
-          <div class="card-description">
+          <div v-if="card.description" class="card-description">
             <h2>Story</h2>
             <p>{{ card.description }}</p>
           </div>
@@ -46,24 +56,32 @@
               </span>
             </div>
           </div>
-          <div v-if="card.evolveFrom" class="card-evolvefrom">
+          <div
+            v-if="
+              card.evolveFrom &&
+              card.stage !== 'MEGA' &&
+              card.stage !== 'VSTAR' &&
+              card.stage !== 'VMAX'
+            "
+            class="card-evolvefrom"
+          >
             <h2>Evolve From</h2>
             <div class="evolution-pokemon">
               <div class="evolve-from">
-                <section :style="getBackgroundColor(childPokemon.type)">
-                  <img :src="childPokemon.image" :alt="childPokemon.name" class="card-img" />
+                <section :style="getBackgroundColor(childPokemon.type)" class="pokemon-section">
+                  <img :src="childPokemon.image" :alt="childPokemon.name" class="pokemon-img" />
                 </section>
                 <div class="details-pokemon">
-                  <h3>{{ card.evolveFrom }} #{{ childPokemon.id }}</h3>
+                  <p>{{ card.evolveFrom }} #{{ childPokemon.id }}</p>
                 </div>
               </div>
               <div class="evolution-line"></div>
               <div class="initial-pokemon">
-                <section :style="getBackgroundColor(initialPokemon.type)">
-                  <img :src="initialPokemon.image" :alt="initialPokemon.name" class="card-img" />
+                <section :style="getBackgroundColor(initialPokemon.type)" class="pokemon-section">
+                  <img :src="initialPokemon.image" :alt="initialPokemon.name" class="pokemon-img" />
                 </section>
                 <div class="details-pokemon">
-                  <h3>{{ card.name }} #{{ initialPokemon.id }}</h3>
+                  <p>{{ card.name }} #{{ initialPokemon.id }}</p>
                 </div>
               </div>
             </div>
@@ -71,22 +89,23 @@
         </div>
       </section>
 
-      <footer class="modal-footer">
-        <slot name="footer"> This is the default footer! </slot>
-        <Accordion title="Others Cards of "> Contenu de la section 1 </Accordion>
-        <button type="button" class="btn-green" @click="close">Close Modal</button>
+      <footer v-if="card.dexId && otherCards !== {}" class="modal-footer">
+        <Accordion title="Others cards" :other-cards="otherCards"> </Accordion>
       </footer>
     </div>
   </div>
 </template>
 <script>
 import { colors } from '@/constants/constants'
+import CardAnimation3d from '@/components/CardAnimation3d.vue'
 import Accordion from './Accordion.vue'
 export default {
   data() {
     return {
       initialPokemon: Object,
       childPokemon: Object,
+      otherCards: [],
+      isSmallScreen: false,
     }
   },
   name: 'Modal',
@@ -94,24 +113,38 @@ export default {
     card: Object,
   },
   components: {
+    CardAnimation3d,
     Accordion,
   },
   watch: {
     card: {
       handler(card) {
-        console.log(card)
-        if (card && card.name) {
-          this.fetchInitialPokemon(card.name)
+        if (card.category === 'Pokemon') {
+          console.log(card)
+          if (card && card.dexId) {
+            this.fetchInitialPokemon(card.dexId[0])
+            if (
+              card &&
+              card.evolveFrom &&
+              card.stage !== 'MEGA' &&
+              card.stage !== 'VSTAR' &&
+              card.stage !== 'VMAX'
+            ) {
+              this.fetchEvolvePokemon(card.evolveFrom)
+            }
+          }
         }
-        if (card && card.evolveFrom) {
-          this.fetchEvolvePokemon(card.evolveFrom)
-        }
-        if (card && card.name) {
-          this.fetchOthersCard(card.name)
-        }
+        this.fetchOtherCards(card.name)
       },
       immediate: true,
     },
+  },
+  mounted() {
+    this.checkWindowSize()
+    window.addEventListener('resize', this.checkWindowSize)
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.checkWindowSize)
   },
   methods: {
     close() {
@@ -122,11 +155,12 @@ export default {
         this.close()
       }
     },
-    async fetchInitialPokemon(pokemonName) {
+    checkWindowSize() {
+      this.isSmallScreen = window.innerWidth < 768
+    },
+    async fetchInitialPokemon(pokemonId) {
       try {
-        const response = await fetch(
-          `https://pokeapi.co/api/v2/pokemon/${pokemonName.toLowerCase()}`,
-        )
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`)
         const pokemon = await response.json()
         this.initialPokemon = {
           id: pokemon.id,
@@ -155,15 +189,36 @@ export default {
         console.error('Erreur lors de la récupération des données :', error)
       }
     },
-    async fetchOthersCard(name) {
+    async fetchOtherCards(name) {
+      if (name) {
+        for (let i = 0; i < name.length; i++) {
+          if (name[i] === ' ') {
+            name = name.replace(' ', '%20')
+          }
+          if (name[i] === '&') {
+            name = name.replace('&', '%26')
+          }
+          if (name[i] === "'") {
+            name = name.replace("'", '%27')
+          }
+        }
+      }
+      console.log('name', name)
       try {
         const response = await fetch(
           `https://api.tcgdex.net/v2/en/cards?name=${name}&category=Pokemon`,
         )
         const data = await response.json()
-        console.log(data)
+        if (data.length === 1) {
+          this.otherCards = []
+          return
+        }
+        this.otherCards = [...data]
+
+        console.log('data', data)
+        console.log('otherCards', this.otherCards)
       } catch (error) {
-        console.error('Erreur lors de la récupération des données :', error)
+        console.error('Error :', error)
       }
     },
     getBadgeTypeStyle(type) {
@@ -202,7 +257,7 @@ export default {
       return {
         borderRadius: '360px',
         border: `3px solid ${color}`,
-        background: `radial-gradient(circle, ${color}, rgba(255, 255, 255, 0) 60%)`,
+        background: `radial-gradient(circle, ${color}, rgba(255, 255, 255, 0) 70%)`,
       }
     },
   },
@@ -225,19 +280,15 @@ export default {
 .modal {
   background: #ffffff;
   box-shadow: 2px 2px 20px 1px;
-  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 80vh;
   display: flex;
   flex-direction: column;
-  margin: 2vh 2vw;
-}
-
-.modal-header,
-.modal-footer {
-  padding: 1vh 2vw;
-  display: flex;
+  margin: 2vh 3vw;
 }
 
 .modal-header {
+  display: flex;
   position: relative;
   border-bottom: 1px solid #eeeeee;
   color: #4aae9b;
@@ -279,6 +330,7 @@ export default {
 .right-section h1 {
   font-size: 2em;
   font-weight: bold;
+  margin-left: 0;
   margin-bottom: 1rem;
 }
 .right-section h2 {
@@ -286,25 +338,22 @@ export default {
   font-weight: bold;
   margin-bottom: 1vh;
 }
-
 .btn-close {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  background: #ff6b6b;
   border: none;
-  font-size: 20px;
-  padding: 10px;
   cursor: pointer;
-  font-weight: bold;
-  color: #4aae9b;
-  background: transparent;
+  padding: 0;
 }
 
-.btn-green {
-  color: white;
-  background: #4aae9b;
-  border: 1px solid #4aae9b;
-  border-radius: 2px;
+.button-close-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .badge-default {
@@ -334,8 +383,20 @@ export default {
   width: 10vw;
   height: 0;
   border-bottom: 2px dashed #d2d1c1;
-  transform: translateY(-50%);
   z-index: 0;
+}
+.pokemon-section {
+  max-width: 100%;
+  max-height: 100%;
+  width: 10vw;
+  height: 10vw;
+}
+.pokemon-img {
+  max-width: 100%;
+  max-height: 100%;
+  width: 10vw;
+  height: 10vw;
+  image-rendering: pixelated;
 }
 .details-pokemon {
   display: flex;
