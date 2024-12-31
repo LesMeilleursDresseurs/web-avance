@@ -53,5 +53,5 @@ For branch names
 >   - `docker compose -f docker-compose.yml restart`
 
 ## API YAML
-
-
+> You need the backend is up (`npm run dev`) <br/>
+> Then the swagger is available on <a href="http://localhost:3000/docs">http://localhost:3000/docs</a>
