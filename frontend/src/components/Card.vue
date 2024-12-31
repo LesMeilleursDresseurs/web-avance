@@ -102,7 +102,7 @@ export default {
       getInformationsCard,
       selectCard,
     }
-  }
+  },
 }
 </script>
 

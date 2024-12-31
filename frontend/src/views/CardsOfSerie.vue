@@ -1,11 +1,13 @@
 <template>
   <MenuTopBar />
   <div class="container">
-    <aside class="menu" :class="{open: navbarOpened}">
-      <img src="@/assets/img/arrow.png"
-           alt="button for opening"
-           :class="{close: !navbarOpened, open: navbarOpened}"
-           @click="navbarOpened=!navbarOpened"/>
+    <aside class="menu" :class="{ open: navbarOpened }">
+      <img
+        src="@/assets/img/arrow.png"
+        alt="button for opening"
+        :class="{ close: !navbarOpened, open: navbarOpened }"
+        @click="navbarOpened = !navbarOpened"
+      />
       <ul>
         <li
           v-for="set in [...sets].reverse()"
@@ -20,7 +22,11 @@
       </ul>
     </aside>
     <div v-if="isLoading" class="loading"><img src="@/assets/loader.gif" alt="loader" /></div>
-    <div v-else-if="!isLoading && cards.length > 0" class="cards-grid" :class="{open: navbarOpened}">
+    <div
+      v-else-if="!isLoading && cards.length > 0"
+      class="cards-grid"
+      :class="{ open: navbarOpened }"
+    >
       <PokemonCard v-for="card in cards" :card="card" :key="card.id" @click="openModal" />
     </div>
     <div v-else class="no-cards">
@@ -133,7 +139,7 @@ onMounted(() => {
   padding: 0;
 }
 
-.container aside.menu img{
+.container aside.menu img {
   width: 15px;
   display: block;
   margin: 10px auto;
@@ -141,11 +147,11 @@ onMounted(() => {
   transition: 0.2s;
 }
 
-.container aside.menu img:hover{
+.container aside.menu img:hover {
   transform: scale(1.2);
 }
 
-.container aside.menu img.close{
+.container aside.menu img.close {
   transform: rotateZ(-180deg);
 }
 
@@ -187,7 +193,7 @@ onMounted(() => {
   padding: 1rem 25px;
 }
 
-.cards-grid.open{
+.cards-grid.open {
   width: 85%;
 }
 

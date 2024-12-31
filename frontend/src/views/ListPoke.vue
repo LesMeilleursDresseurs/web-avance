@@ -3,7 +3,8 @@
   <h1>National Pokédex</h1>
 
   <div class="filter-bar">
-    <div class="search-and-generations">-->
+    <div class="search-and-generations">
+      -->
       <input
         type="text"
         v-model="recherchePokemonRequete"
@@ -460,7 +461,9 @@ header {
   padding: 1rem;
   border-radius: 0.5rem;
   text-align: center;
-  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+  box-shadow:
+    rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
   margin-bottom: 0;
   transition: transform 0.2s;
   position: relative;
