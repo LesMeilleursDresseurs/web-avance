@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import store from '../store' // Import your Vuex store
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,11 +7,6 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: () => import('../views/ListPoke.vue'),
-    },
-    {
-      path: '/about',
-      name: 'about',
-      component: () => import('../views/AboutView.vue'),
     },
     {
       path: '/series',

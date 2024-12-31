@@ -155,17 +155,6 @@ img.picture {
   flex-direction: column;
 }
 
-::-webkit-scrollbar {
-  width: 5px;
-  height: 8px;
-  background-color: transparent;
-}
-/* Add a thumb */
-::-webkit-scrollbar-thumb {
-  background: #ff6f61;
-  border-radius: 20px;
-}
-
 .general-chart {
   width: 50%;
   height: auto;

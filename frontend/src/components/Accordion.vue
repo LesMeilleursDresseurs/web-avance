@@ -11,7 +11,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import PokemonCard from '@/components/Card.vue'
 
 export default {

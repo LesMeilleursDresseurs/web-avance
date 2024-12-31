@@ -1,7 +1,11 @@
 <template>
   <MenuTopBar />
   <div class="container">
-    <aside class="menu">
+    <aside class="menu" :class="{open: navbarOpened}">
+      <img src="@/assets/img/arrow.png"
+           alt="button for opening"
+           :class="{close: !navbarOpened, open: navbarOpened}"
+           @click="navbarOpened=!navbarOpened"/>
       <ul>
         <li
           v-for="set in [...sets].reverse()"
@@ -16,7 +20,7 @@
       </ul>
     </aside>
     <div v-if="isLoading" class="loading"><img src="@/assets/loader.gif" alt="loader" /></div>
-    <div v-else-if="!isLoading && cards.length > 0" class="cards-grid">
+    <div v-else-if="!isLoading && cards.length > 0" class="cards-grid" :class="{open: navbarOpened}">
       <PokemonCard v-for="card in cards" :card="card" :key="card.id" @click="openModal" />
     </div>
     <div v-else class="no-cards">
@@ -50,6 +54,7 @@ const seriesId = props.id
 const isLoading = ref(true)
 const SetsAndCards = ref<objectSetsAndCards>({})
 const selectedCard = ref<Card | null>(null)
+const navbarOpened = ref(true)
 
 const fetchSets = async () => {
   const response = await fetch(`https://api.tcgdex.net/v2/en/series/${seriesId}`)
@@ -108,34 +113,82 @@ onMounted(() => {
 }
 
 .container aside.menu {
-  width: 15%;
-  padding-left: 1rem;
-  background-color: #2c3e50;
+  background-color: #fdf6f5;
   height: 100%;
-  padding-top: 1%;
+  padding: 1% 10px;
   position: sticky;
   left: 0;
   top: 0;
+  transition: 0.3s;
 }
+
+.container aside.menu.open {
+  overflow-y: auto;
+  width: 15%;
+}
+
+.container aside.menu {
+  overflow-y: hidden;
+  width: 30px;
+  padding: 0;
+}
+
+.container aside.menu img{
+  width: 15px;
+  display: block;
+  margin: 10px auto;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.container aside.menu img:hover{
+  transform: scale(1.2);
+}
+
+.container aside.menu img.close{
+  transform: rotateZ(-180deg);
+}
+
 .menu ul {
   list-style: none;
   padding: 0;
+  opacity: 0;
 }
+
+.menu.open ul {
+  opacity: 1;
+}
+
 .menu li {
   padding: 0.5rem;
   cursor: pointer;
-  border-bottom: 1px solid #2c3e50;
+  border-bottom: 1px solid #c4c6c6;
+  transition: 0.2s ease;
 }
+
 .menu li.active {
+  border-radius: 5px;
+  border: 1px solid #c4c6c6;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  margin: 5px 0;
+}
+
+.menu li:hover {
   font-weight: bold;
 }
+
 .cards-grid {
-  width: 85%;
+  transition: 0.3s;
+  width: calc(100% - 30px);
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
   gap: 1rem;
   padding: 1rem 25px;
+}
+
+.cards-grid.open{
+  width: 85%;
 }
 
 .loading {
