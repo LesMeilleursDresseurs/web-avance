@@ -77,10 +77,10 @@ export default {
   },
   methods: {
     goPokedexNational() {
-      this.$router.push('/pokedex-national')
+      this.$router.push('/')
     },
     goJccPokemon() {
-      this.$router.push('/jcc-pokemon')
+      this.$router.push('/series')
     },
     goLogin() {
       this.$router.push('/login')
@@ -109,11 +109,12 @@ header {
 }
 .site-header {
   display: flex;
+  background-color: rgba(255, 111, 97, 0.7);
+  backdrop-filter: blur(10px);
   position: relative;
   justify-content: center;
   align-items: center;
   padding: 15px 20px;
-  background-color: #ff6f61;
   color: white;
   width: 100%;
   z-index: 2;

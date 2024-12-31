@@ -2,10 +2,9 @@
   <MenuTopBar />
   <h1>National Pokédex</h1>
 
-  <!--Filtre-->
   <div class="filter-bar">
     <div class="search-and-generations">
-      <!--Recherche par nom ou ID-->
+      -->
       <input
         type="text"
         v-model="recherchePokemonRequete"
@@ -14,7 +13,6 @@
         class="search-input"
       />
 
-      <!--Recherche par génération-->
       <div class="generation-filter">
         <span class="generation-label">Generation : </span>
         <button class="filter-button all" @click="selectAllGenerations">All</button>
@@ -32,7 +30,6 @@
       </div>
     </div>
 
-    <!-- Recherche par type -->
     <div class="type-filter">
       <span class="type-label">Type :</span>
       <button class="filter-button all" @click="selectAllTypes">All</button>
@@ -74,17 +71,15 @@ import { onMounted, ref } from 'vue'
 import MenuTopBar from '@/components/MenuTopBar.vue'
 import { useRouter } from 'vue-router'
 
-// Information récupérées d'un Pokémon
 interface Pokemon {
   id: number
   name: string
   image: string
 }
 
-// Variables
 const router = useRouter()
-const allPokemons = ref<Pokemon[]>([]) // Tous les Pokémons
-const displayedPokemons = ref<Pokemon[]>([]) // Pokémon affichés après filtres éventuels
+const allPokemons = ref<Pokemon[]>([])
+const displayedPokemons = ref<Pokemon[]>([])
 const isLoading = ref(true)
 const recherchePokemonRequete = ref('')
 const generations = ref([
@@ -99,7 +94,7 @@ const generations = ref([
   { label: '9', value: 9 },
 ])
 const selectedGenerations = ref<number[]>(generations.value.map((gen) => gen.value))
-const visibleCount = ref(20) // Nombre de Pokémon visible au chargement de la page
+const visibleCount = ref(20)
 const types = ref([
   { id: 'normal', name: 'Normal', icon: 'src/assets/img/icon/Icône_Type_Normal_HOME.png' },
   { id: 'grass', name: 'Grass', icon: 'src/assets/img/icon/Icône_Type_Plante_HOME.png' },
@@ -159,8 +154,8 @@ async function fetchAllPokemons() {
       }),
     )
 
-    allPokemons.value = pokemonDetails // Stockage des Pokémon
-    displayedPokemons.value = pokemonDetails // Initialiser la liste à afficher
+    allPokemons.value = pokemonDetails
+    displayedPokemons.value = pokemonDetails
     isLoading.value = false
   } catch (err) {
     console.error('Erreur lors du chargement des Pokémon :', err)
@@ -169,7 +164,6 @@ async function fetchAllPokemons() {
   }
 }
 
-// Filtrage par génération
 function filterByGeneration(pokemons: Pokemon[]): Pokemon[] {
   if (selectedGenerations.value.length === 0) {
     return pokemons
@@ -191,11 +185,10 @@ function filterByGeneration(pokemons: Pokemon[]): Pokemon[] {
   })
 }
 
-// Filtrage par recherche textuelle
 function filterBySearch(pokemons: Pokemon[]): Pokemon[] {
   const query = recherchePokemonRequete.value.trim().toLowerCase()
   if (!query) {
-    return pokemons // Aucun texte recherché, afficher tous les Pokémon
+    return pokemons
   }
 
   return pokemons.filter(
@@ -203,7 +196,6 @@ function filterBySearch(pokemons: Pokemon[]): Pokemon[] {
   )
 }
 
-// Combinaison des filtres
 function filterAndSearch() {
   if (selectedGenerations.value.length === 0 || selectedTypes.value.length === 0) {
     displayedPokemons.value = []
@@ -469,10 +461,13 @@ header {
   padding: 1rem;
   border-radius: 0.5rem;
   text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
   margin-bottom: 0;
   transition: transform 0.2s;
   position: relative;
+  cursor: pointer;
 }
 
 div.idPoke {
@@ -480,7 +475,7 @@ div.idPoke {
   top: 1vw;
   right: 1.2vw;
   font-size: 1vw;
-  background-color: #6b6d65;
+  background-color: #eeeeee;
   border: #f2f2f2 solid 1px;
   border-radius: 0.5rem;
   padding: 3px;

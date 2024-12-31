@@ -87,6 +87,22 @@ export default {
       await store.dispatch('pokedex/removeCard', this.card)
     },
   },
+  setup(props, { emit }) {
+    const getInformationsCard = async (card) => {
+      const response = await fetch(`https://api.tcgdex.net/v2/en/cards/${card.id}`)
+      const data = await response.json()
+      console.log('data', data)
+      return data
+    }
+    const selectCard = async (card) => {
+      const cardInfo = await getInformationsCard(card)
+      emit('click', cardInfo)
+    }
+    return {
+      getInformationsCard,
+      selectCard,
+    }
+  },
 }
 </script>
 
